@@ -4,14 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="attendance register generation completed">
-      <change afterPath="$PROJECT_DIR$/g_main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/marks_sheet_pdf.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="testing out marks sheet generation">
+      <change afterPath="$PROJECT_DIR$/assets/check-button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cross-mark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/github.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/help.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/help.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/icon1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/settings.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/theme.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/g_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/g_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/marks_sheet_pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pdf_saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_saver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,8 +35,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/g_main.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pdf_saver.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/ui/main_window.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -43,23 +58,51 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Python.g_main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.graphics.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main_window.executor&quot;: &quot;Run&quot;,
     &quot;Python.marks_sheet_pdf.executor&quot;: &quot;Run&quot;,
     &quot;Python.pdf_saver.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tset.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/AmritaAttendanceRegister&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/AmritaAttendanceRegister/assets&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\AmritaAttendanceRegister\assets" />
       <recent name="D:\PycharmProjects\AmritaAttendanceRegister" />
       <recent name="D:\PycharmProjects\AmritaAttendanceRegister\ui" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.graphics">
+    <configuration name="graphics" type="PythonConfigurationType" factoryName="Python">
+      <module name="AmritaAttendanceRegister" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.10 (AmritaAttendanceRegister)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/g_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AmritaAttendanceRegister" />
       <option name="ENV_FILES" value="" />
@@ -82,6 +125,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.graphics" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -116,12 +163,32 @@
       <option name="project" value="LOCAL" />
       <updated>1727281670471</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="testing out marks sheet generation">
+      <option name="closed" value="true" />
+      <created>1727500532966</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1727500532966</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="attendance register generation completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="attendance register generation completed" />
+    <MESSAGE value="testing out marks sheet generation" />
+    <option name="LAST_COMMIT_MESSAGE" value="testing out marks sheet generation" />
   </component>
 </project>
