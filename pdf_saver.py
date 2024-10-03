@@ -29,7 +29,7 @@ class PDF(FPDF):
 
     def table_header(self, columns, col_widths):
 
-        self.set_font('Arial', 'B', 10)
+        self.set_font('Arial', '', 10)
 
         x = self.get_x()
         y = self.get_y()
