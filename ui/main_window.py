@@ -498,9 +498,8 @@ class MainWindow(QMainWindow):
         """)
 
         quiz_spinbox = QSpinBox()
-        quiz_spinbox.setMinimum(1)
+        quiz_spinbox.setMinimum(0)
         quiz_spinbox.setMaximum(5)
-        quiz_spinbox.setValue(1)
         quiz_spinbox.setFixedWidth(70)
         quiz_spinbox.setStyleSheet("""
             font-family: Century Gothic;
@@ -546,9 +545,8 @@ class MainWindow(QMainWindow):
         """)
 
         assignments_spinbox = QSpinBox()
-        assignments_spinbox.setMinimum(1)
+        assignments_spinbox.setMinimum(0)
         assignments_spinbox.setMaximum(5)
-        assignments_spinbox.setValue(1)
         assignments_spinbox.setFixedWidth(70)
         assignments_spinbox.setStyleSheet("""
             font-family: Century Gothic;

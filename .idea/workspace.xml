@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="fixed bugs, improved UI, made less hard coded">
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="standardized the pdf generation requirements for both attendance and marks">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/attendance_sheet_pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/marks_sheet_pdf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728203477939</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="standardized the pdf generation requirements for both attendance and marks">
+      <option name="closed" value="true" />
+      <created>1728215494364</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1728215494364</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -203,6 +211,7 @@
     <MESSAGE value="testing out marks sheet generation" />
     <MESSAGE value="UI for the app" />
     <MESSAGE value="fixed bugs, improved UI, made less hard coded" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed bugs, improved UI, made less hard coded" />
+    <MESSAGE value="standardized the pdf generation requirements for both attendance and marks" />
+    <option name="LAST_COMMIT_MESSAGE" value="standardized the pdf generation requirements for both attendance and marks" />
   </component>
 </project>

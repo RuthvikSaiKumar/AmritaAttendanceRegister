@@ -6,6 +6,7 @@ from fpdf import FPDF
 # todo: handle long names with ellipsis
 
 num_students = 62
+end_sem_type = 'Written'  # or Project
 
 # format (number of columns, width)
 requirements = {
@@ -18,7 +19,7 @@ requirements = {
     'Missed Quiz': (1, 20),
     'Assignment': (1, 20),
     'Sessional Marks': (1, 25),
-    'End Sem': (1, 20),
+    f'End Sem ({end_sem_type})': (1, 25),
     'Total Marks': (1, 20),
     'Grade': (1, 20)
 }
