@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="UI for the app">
-      <change afterPath="$PROJECT_DIR$/attendance_sheet_pdf.py" afterDir="false" />
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="fixed bugs, improved UI, made less hard coded">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/g_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/g_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/attendance_sheet_pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/marks_sheet_pdf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_saver.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,10 +23,12 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/attendance_sheet_pdf.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/g_main.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/pdf_saver.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/marks_sheet_pdf.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ui/main_window.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -176,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1727709926964</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fixed bugs, improved UI, made less hard coded">
+      <option name="closed" value="true" />
+      <created>1728203477939</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1728203477939</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,6 +202,7 @@
     <MESSAGE value="attendance register generation completed" />
     <MESSAGE value="testing out marks sheet generation" />
     <MESSAGE value="UI for the app" />
-    <option name="LAST_COMMIT_MESSAGE" value="UI for the app" />
+    <MESSAGE value="fixed bugs, improved UI, made less hard coded" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bugs, improved UI, made less hard coded" />
   </component>
 </project>

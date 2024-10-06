@@ -7,14 +7,22 @@ from fpdf import FPDF
 num_students = 62
 days = 50
 
-data = {
-    'Roll No.': list(range(1, num_students + 1)),
-    'Reg. No.': [f'BL.EN.U4RAE230{f"0{i}" if i < 10 else i}' for i in range(1, num_students + 1)],
-    'Name of Student': ['Student Name'] * num_students
+requirements = {
+    'Roll No.': (1, 10),
+    'Reg. No.': (1, 40),
+    'Name of Student': (1, 60),
 }
 
-for i in range(1, days + 1):
-    data[str(i)] = [''] * num_students
+for day in range(1, days + 1):
+    requirements[str(day)] = (1, 8)
+
+data = {}
+widths = []
+
+for name, value in requirements.items():
+    for count in range(value[0]):
+        data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
+        widths.append(value[1])
 
 data_frame = pd.DataFrame(data)
 
@@ -116,6 +124,7 @@ class PDF(FPDF):
             split_at = self.find_max_index(extra_col_widths,
                                            pdf.w - pdf.l_margin - pdf.r_margin - sum(col_widths[:3])) + 1
 
+        # noinspection PyUnusedLocal
         iterations = 0
         with contextlib.suppress(ZeroDivisionError):
             iterations = len(extra_cols) // split_at
@@ -163,7 +172,7 @@ class PDF(FPDF):
 
 pdf = PDF(orientation='L')
 pdf.set_auto_page_break(auto=True, margin=10)
-pdf.draw_table(data_frame, [10, 40, 60] + [8] * days)
+pdf.draw_table(data_frame, widths)
 pdf.output('attendance.pdf')
 
 print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
