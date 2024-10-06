@@ -5,8 +5,9 @@ from PySide6.QtWidgets import QMainWindow, QScrollArea, QVBoxLayout, QPushButton
 
 
 class MainWindow(QMainWindow):
+    missed_midsem_checkbox: QCheckBox
+    midsem_checkbox: QCheckBox
     right_panel: QWidget
-    requirements_title_label: QLabel
     class_dropdown: QComboBox
     sheet_dropdown: QComboBox
     block_select: QWidget
@@ -45,12 +46,12 @@ class MainWindow(QMainWindow):
 
         ############################################
 
-        # todo: add spacing and vertical lines as separators
-
         horizontal_layout = QHBoxLayout()
         horizontal_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         horizontal_layout.addWidget(self.block_select)
+        horizontal_layout.addSpacing(15)
         horizontal_layout.addWidget(area)
+        horizontal_layout.addSpacing(15)
         horizontal_layout.addWidget(self.right_panel)
 
         central_widget = QWidget()
@@ -133,10 +134,26 @@ class MainWindow(QMainWindow):
         load_button = QPushButton("Load")
         load_button.setToolTip("Load students list from csv file")
         load_button.setStyleSheet("""
-            background-color: #021002;
-            color: #16DB65;
-            font-family: Century Gothic;
-            font-size: 16px;
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
+            QToolTip {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 14px;
+                border: 1px solid #16DB65;
+                border-radius: 10px;
+            }
         """)
         load_button.setMinimumSize(100, 30)
         load_button.setMaximumSize(100, 30)
@@ -144,10 +161,26 @@ class MainWindow(QMainWindow):
         save_button = QPushButton("Save")
         save_button.setToolTip("Save students list to csv file")
         save_button.setStyleSheet("""
-            background-color: #021002;
-            color: #16DB65;
-            font-family: Century Gothic;
-            font-size: 16px;
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
+            QToolTip {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 14px;
+                border: 1px solid #16DB65;
+                border-radius: 10px;
+            }
         """)
         save_button.setMinimumSize(100, 30)
         save_button.setMaximumSize(100, 30)
@@ -155,10 +188,26 @@ class MainWindow(QMainWindow):
         add_button = QPushButton("Add")
         add_button.setToolTip("Add a new student to the list")
         add_button.setStyleSheet("""
-            background-color: #021002;
-            color: #16DB65;
-            font-family: Century Gothic;
-            font-size: 16px;
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
+            QToolTip {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 14px;
+                border: 1px solid #16DB65;
+                border-radius: 10px;
+            }
         """)
         add_button.setMinimumSize(100, 30)
         add_button.setMaximumSize(100, 30)
@@ -166,10 +215,26 @@ class MainWindow(QMainWindow):
         remove_button = QPushButton("Remove")
         remove_button.setToolTip("Remove selected student from the list")
         remove_button.setStyleSheet("""
-            background-color: #021002;
-            color: #16DB65;
-            font-family: Century Gothic;
-            font-size: 16px;
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
+            QToolTip {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 14px;
+                border: 1px solid #16DB65;
+                border-radius: 10px;
+            }
         """)
         remove_button.setMinimumSize(100, 30)
         remove_button.setMaximumSize(100, 30)
@@ -182,34 +247,33 @@ class MainWindow(QMainWindow):
         ####################################################
 
         table = QTableWidget()
-        table.setRowCount(640)
+        table.setRowCount(64)
         table.setColumnCount(2)
         table.setHorizontalHeaderLabels(["Reg. No.", "Name"])
         table.setStyleSheet("""
-            QScrollBar { width: 10px; background-color: #38AD6B; }
+            QScrollBar { background-color: #38AD6B; }
             QScrollBar::handle { background-color: #021002; }
             QScrollBar::add-line, QScrollBar::sub-line { background: none; }
             QScrollBar::add-page, QScrollBar::sub-page { background: none; }
 
             QHeaderView::section {
                 background-color: #021002;
-                color: white;
-                font-family: "Roboto";
+                font-family: "Montserrat";
                 font-size: 14px;
             }
 
             QTableWidget::item {
                 background-color: #38AD6B;
-                color: white;
-                font-family: "Roboto";
-                font-size: 12px;
+                font-family: "Montserrat";
+                font-size: 14px;
+                color: #021002;
             }
 
             QTableWidget::item:selected {
                 background-color: #0078D7;
-                color: white;
-                font-family: "Roboto";
-                font-size: 12px;
+                color: #021002;
+                font-family: "Montserrat";
+                font-size: 14px;
             }
         """)
 
@@ -240,34 +304,15 @@ class MainWindow(QMainWindow):
         self.class_dropdown = QComboBox()
         self.class_dropdown.addItem("Theory")
         self.class_dropdown.addItem("Lab")
+        self.class_dropdown.addItem("Lab-integrated")
         self.class_dropdown.setStyleSheet("""
             font-family: Century Gothic;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
         """)
         self.class_dropdown.setMinimumSize(180, 30)
         self.class_dropdown.setMaximumSize(180, 30)
         self.class_dropdown.currentIndexChanged.connect(self.on_class_dropdown_changed)
-
-        label2 = QLabel("Select Sheet")
-        label2.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        label2.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            color: #16DB65;
-            font-weight: bold;
-        """)
-
-        self.sheet_dropdown = QComboBox()
-        self.sheet_dropdown.addItem("Attendance")
-        self.sheet_dropdown.addItem("Marks")
-        self.sheet_dropdown.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            font-weight: bold;
-        """)
-        self.sheet_dropdown.setMinimumSize(180, 30)
-        self.sheet_dropdown.setMaximumSize(180, 30)
 
         top_layout = QVBoxLayout()
         top_layout.setSpacing(10)
@@ -275,8 +320,6 @@ class MainWindow(QMainWindow):
 
         top_layout.addWidget(label1)
         top_layout.addWidget(self.class_dropdown)
-        top_layout.addWidget(label2)
-        top_layout.addWidget(self.sheet_dropdown)
 
         #########################################################################
 
@@ -284,67 +327,46 @@ class MainWindow(QMainWindow):
         requirements_layout.setSpacing(10)
         requirements_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
-        # todo: Requirements for the selected sheet (Theory/Lab)
-        self.requirements_title_label = QLabel("Requirements")
-        self.requirements_title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.requirements_title_label.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            color: #16DB65;
-            font-weight: bold;
+        # 2 buttons - temperory attendance and full attendance
+        temp_attendance_button = QPushButton("Temporary Attendance")
+        temp_attendance_button.setStyleSheet("""
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
         """)
-        self.on_class_dropdown_changed(0)
+        temp_attendance_button.setMinimumSize(200, 40)
+        temp_attendance_button.setMaximumSize(200, 40)
 
-        # First requirement: Roll No.
-        requirement1 = QHBoxLayout()
-        requirement1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        requirement1_label = QLabel("Attendance")
-        requirement1_label.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            color: #16DB65;
+        full_attendance_button = QPushButton("Full Attendance")
+        full_attendance_button.setStyleSheet("""
+            QPushButton {
+                background-color: #021002;
+                color: #16DB65;
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #16DB65;
+                color: #021002;
+                border: 2px solid #021002;
+                font-weight: bold;
+            }
         """)
-
-        requirement1_image = QLabel()
-        requirement1_image.setPixmap(QPixmap("assets/check-button.png"))
-        requirement1_image.setScaledContents(True)
-        requirement1_image.setMinimumSize(20, 20)
-        requirement1_image.setMaximumSize(20, 20)
-
-        # Add the label to the layout, then a stretch, then the image
-        requirement1.addWidget(requirement1_label)
-        requirement1.addStretch()  # This pushes the image to the right
-        requirement1.addWidget(requirement1_image)
-        requirement1.addWidget(QWidget())  # This gives margin to the right
-
-        # Second requirement: Reg. No.
-        requirement2 = QHBoxLayout()
-        requirement2.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        requirement2_label = QLabel("Marks")
-        requirement2_label.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            color: #16DB65;
-        """)
-
-        requirement2_image = QLabel()
-        requirement2_image.setPixmap(QPixmap("assets/cross-mark.png"))
-        requirement2_image.setScaledContents(True)
-        requirement2_image.setMinimumSize(20, 20)
-        requirement2_image.setMaximumSize(20, 20)
-
-        # Add the label to the layout, then a stretch, then the image
-        requirement2.addWidget(requirement2_label)
-        requirement2.addStretch()  # This pushes the image to the right
-        requirement2.addWidget(requirement2_image)
-        requirement2.addWidget(QWidget())  # This gives margin to the right
+        full_attendance_button.setMinimumSize(200, 40)
+        full_attendance_button.setMaximumSize(200, 40)
 
         # Add everything to the main layout
-        requirements_layout.addWidget(self.requirements_title_label)
-        requirements_layout.addLayout(requirement1)
-        requirements_layout.addLayout(requirement2)
+        requirements_layout.addWidget(temp_attendance_button)
+        requirements_layout.addWidget(full_attendance_button)
 
         #########################################################################
 
@@ -358,7 +380,7 @@ class MainWindow(QMainWindow):
 
     def create_actions_list(self):  # sourcery skip: extract-duplicate-method
 
-        # todo: make the title words have an underline like separator and a border for the whole panel
+        # todo: make a border for the whole panel
         # todo: disable the underline for the checkboxes
         # todo: manage the stretch going too far to the right
 
@@ -370,6 +392,10 @@ class MainWindow(QMainWindow):
             color: #16DB65;
             font-weight: bold;
         """)
+
+        line = QLabel()
+        line.setFixedHeight(3)
+        line.setStyleSheet("""background-color: #16DB65;""")
 
         num_days_label = QLabel("Number of Days")
         num_days_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -405,7 +431,11 @@ class MainWindow(QMainWindow):
             font-weight: bold;
         """)
 
-        midsem_label = QLabel("Midsem")
+        line2 = QLabel()
+        line2.setFixedHeight(3)
+        line2.setStyleSheet("""background-color: #16DB65;""")
+
+        midsem_label = QLabel("Mid Semester")
         midsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         midsem_label.setStyleSheet("""
             font-family: Century Gothic;
@@ -413,8 +443,8 @@ class MainWindow(QMainWindow):
             color: #16DB65;
         """)
 
-        midsem_checkbox = QCheckBox()
-        midsem_checkbox.setStyleSheet("""
+        self.midsem_checkbox = QCheckBox()
+        self.midsem_checkbox.setStyleSheet("""
             QCheckBox::indicator {
                 width: 30px;
                 height: 30px;
@@ -424,22 +454,24 @@ class MainWindow(QMainWindow):
                 font-size: 16px;
             }
         """)
+        self.midsem_checkbox.setChecked(True)
+        self.midsem_checkbox.checkStateChanged.connect(self.on_midsem_checkbox_changed)
 
         hlayout2 = QHBoxLayout()
         hlayout2.addWidget(midsem_label)
         hlayout2.addStretch()
-        hlayout2.addWidget(midsem_checkbox)
+        hlayout2.addWidget(self.midsem_checkbox)
 
-        t3_label = QLabel("T3")
-        t3_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        t3_label.setStyleSheet("""
+        missed_midsem_label = QLabel("Missed Mid Semester")
+        missed_midsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        missed_midsem_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
         """)
 
-        t3_checkbox = QCheckBox()
-        t3_checkbox.setStyleSheet("""
+        self.missed_midsem_checkbox = QCheckBox()
+        self.missed_midsem_checkbox.setStyleSheet("""
             QCheckBox::indicator {
                 width: 30px;
                 height: 30px;
@@ -449,34 +481,13 @@ class MainWindow(QMainWindow):
                 font-size: 16px;
             }
         """)
+        self.missed_midsem_checkbox.setEnabled(False)
+        self.missed_midsem_checkbox.setChecked(True)
 
         hlayout3 = QHBoxLayout()
-        hlayout3.addWidget(t3_label)
+        hlayout3.addWidget(missed_midsem_label)
         hlayout3.addStretch()
-        hlayout3.addWidget(t3_checkbox)
-
-        qx_label = QLabel("Qx")
-        qx_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        qx_label.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-            color: #16DB65;
-        """)
-
-        qx_spinbox = QSpinBox()
-        qx_spinbox.setMinimum(1)
-        qx_spinbox.setMaximum(5)
-        qx_spinbox.setValue(1)
-        qx_spinbox.setFixedWidth(70)
-        qx_spinbox.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 16px;
-        """)
-
-        hlayout4 = QHBoxLayout()
-        hlayout4.addWidget(qx_label)
-        hlayout4.addStretch()
-        hlayout4.addWidget(qx_spinbox)
+        hlayout3.addWidget(self.missed_midsem_checkbox)
 
         quiz_label = QLabel("Quiz")
         quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -496,21 +507,21 @@ class MainWindow(QMainWindow):
             font-size: 16px;
         """)
 
-        hlayout5 = QHBoxLayout()
-        hlayout5.addWidget(quiz_label)
-        hlayout5.addStretch()
-        hlayout5.addWidget(quiz_spinbox)
+        hlayout4 = QHBoxLayout()
+        hlayout4.addWidget(quiz_label)
+        hlayout4.addStretch()
+        hlayout4.addWidget(quiz_spinbox)
 
-        sessional_label = QLabel("Sessional")
-        sessional_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        sessional_label.setStyleSheet("""
+        missed_quiz_label = QLabel("Missed Quiz")
+        missed_quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        missed_quiz_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
         """)
 
-        sessional_checkbox = QCheckBox()
-        sessional_checkbox.setStyleSheet("""
+        missed_quiz_checkbox = QCheckBox()
+        missed_quiz_checkbox.setStyleSheet("""
             QCheckBox::indicator {
                 width: 30px;
                 height: 30px;
@@ -521,42 +532,90 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        hlayout6 = QHBoxLayout()
-        hlayout6.addWidget(sessional_label)
-        hlayout6.addStretch()
-        hlayout6.addWidget(sessional_checkbox)
+        hlayout5 = QHBoxLayout()
+        hlayout5.addWidget(missed_quiz_label)
+        hlayout5.addStretch()
+        hlayout5.addWidget(missed_quiz_checkbox)
 
-        endsem_label = QLabel("Endsem")
+        assignments_label = QLabel("Assignments")
+        assignments_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        assignments_label.setStyleSheet("""
+            font-family: Century Gothic;
+            font-size: 16px;
+            color: #16DB65;
+        """)
+
+        assignments_spinbox = QSpinBox()
+        assignments_spinbox.setMinimum(1)
+        assignments_spinbox.setMaximum(5)
+        assignments_spinbox.setValue(1)
+        assignments_spinbox.setFixedWidth(70)
+        assignments_spinbox.setStyleSheet("""
+            font-family: Century Gothic;
+            font-size: 16px;
+        """)
+
+        hlayout6 = QHBoxLayout()
+        hlayout6.addWidget(assignments_label)
+        hlayout6.addStretch()
+        hlayout6.addWidget(assignments_spinbox)
+
+        # sessional_label = QLabel("Sessional")
+        # sessional_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        # sessional_label.setStyleSheet("""
+        #     font-family: Century Gothic;
+        #     font-size: 16px;
+        #     color: #16DB65;
+        # """)
+        #
+        # sessional_checkbox = QCheckBox()
+        # sessional_checkbox.setStyleSheet("""
+        #     QCheckBox::indicator {
+        #         width: 30px;
+        #         height: 30px;
+        #     }
+        #     QCheckBox {
+        #         font-family: Century Gothic;
+        #         font-size: 16px;
+        #     }
+        # """)
+        #
+        # hlayout6 = QHBoxLayout()
+        # hlayout6.addWidget(sessional_label)
+        # hlayout6.addStretch()
+        # hlayout6.addWidget(sessional_checkbox)
+
+        endsem_label = QLabel("End Semester")
         endsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         endsem_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
         """)
-        endsem_checkbox = QCheckBox()
-        endsem_checkbox.setStyleSheet("""
-            QCheckBox::indicator {
-                width: 30px;
-                height: 30px;
-            }
-            QCheckBox {
-                font-family: Century Gothic;
-                font-size: 16px;
-            }
+        endsem_dropdown = QComboBox()
+        endsem_dropdown.addItem("Written")
+        endsem_dropdown.addItem("Project")
+        endsem_dropdown.setStyleSheet("""
+            font-family: Century Gothic;
+            font-size: 16px;
         """)
+        endsem_dropdown.setMinimumSize(120, 30)
+        endsem_dropdown.setMaximumSize(120, 30)
 
         hlayout7 = QHBoxLayout()
         hlayout7.addWidget(endsem_label)
         hlayout7.addStretch()
-        hlayout7.addWidget(endsem_checkbox)
+        hlayout7.addWidget(endsem_dropdown)
 
         attendance_marks_layout = QVBoxLayout()
         attendance_marks_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         attendance_marks_layout.setSpacing(10)
 
         attendance_marks_layout.addWidget(attendance_label)
+        attendance_marks_layout.addWidget(line)
         attendance_marks_layout.addLayout(hlayout)
         attendance_marks_layout.addWidget(marks_label)
+        attendance_marks_layout.addWidget(line2)
         attendance_marks_layout.addLayout(hlayout2)
         attendance_marks_layout.addLayout(hlayout3)
         attendance_marks_layout.addLayout(hlayout4)
@@ -732,8 +791,7 @@ class MainWindow(QMainWindow):
     #########################################################################################
 
     def on_class_dropdown_changed(self, index):
-        if index == 0:
-            self.requirements_title_label.setText("Requirements for Theory")
-        else:
-            self.requirements_title_label.setText("Requirements for Lab")
-        self.requirements_title_label.update()
+        pass
+
+    def on_midsem_checkbox_changed(self, state):
+        self.missed_midsem_checkbox.setChecked(state == Qt.CheckState.Checked)
