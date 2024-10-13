@@ -1,137 +1,209 @@
+import contextlib
+
 import pandas as pd
 from fpdf import FPDF
 
 # todo: handle long names with ellipsis
 
 num_students = 62
-days = 60
+end_sem_type = 'Written'  # or Project
 
-data = {
-    'No.': list(range(1, num_students + 1)),
-    'Reg. No.': [f'BL.EN.U4RAE230{f"0{i}" if i < 10 else i}' for i in range(1, num_students + 1)],
-    'Name of Student': ['Student Name'] * num_students
+# format (number of columns, width)
+requirements = {
+    'Roll No.': (1, 10),
+    'Reg. No.': (1, 40),
+    'Name of Student': (1, 60),
+    '1': (1, 24),
+    '2': (1, 24),
+    '3': (4, 24),
+    '4': (1, 24),
+    '5': (1, 24),
+    '6': (1, 24)
 }
 
-for i in range(1, days + 1):
-    data[str(i)] = [''] * num_students
+data = {}
+widths = []
+
+for name, value in requirements.items():
+    for count in range(value[0]):
+        data[f'{name}'] = [''] * num_students
+        widths.append(value[1])
+print(widths)
 
 data_frame = pd.DataFrame(data)
 
 
 class PDF(FPDF):
-
     cell_h = 7
 
     def header(self):
-        self.set_font('Arial', '', 6)
-        self.cell(0, 8, f'ATTENDANCE SHEET Code No./ Course/ {"_" * 50} Sem / Section / Year {"_" * 70}',
-                  border=0, ln=1, align='L')
+        self.set_font('Arial', 'B', 8)
+        self.cell(0, 8, 'MARKS SHEET', border=0, ln=1, align='C')
 
-    def table_header(self, columns, col_widths):
+    def table_header(self, df, col_widths):
+        # sourcery skip: extract-duplicate-method
 
-        self.set_font('Arial', 'B', 6)
+        self.set_font('Arial', '', 7)
 
+        # top row
+
+        # roll no.
         x = self.get_x()
-        
         y = self.get_y()
 
         self.set_x(x)
-        self.cell(col_widths[0],40 , columns[0], border=1, align='C')
+        self.multi_cell(col_widths[0], self.cell_h * 2, df[0], border=1, align='C')
         self.set_xy(x + col_widths[0], y)
 
-        self.cell(col_widths[1], 40, columns[1], border=1, align='C')
-        self.cell(col_widths[2], 32, columns[2], border=1, align='C')
+        self.cell(col_widths[1], self.cell_h * 4, df[1], border=1, align='C')
+        self.cell(col_widths[2] - 15, self.cell_h * 4, df[2], border=1, align='C')
+
+        self.cell(15, self.cell_h, 'Experiment:', border=1)
+    
+        for i in range(3, len(df)):
+            self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
+
+        self.ln()
+
+        # middle row
+
+        # empty for the first three columns
+        self.cell(col_widths[0], self.cell_h, '', border=0)
+        self.cell(col_widths[1], self.cell_h, '', border=0)
+        self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
+        self.cell(15, self.cell_h, 'Date:', border=1)
+
+        for i in range(3, len(df)):
+            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
+
+        self.ln()
+
+        # bottom row
+
+        # empty for the first three columns
+        self.cell(col_widths[0], self.cell_h, '', border=0)
+        self.cell(col_widths[1], self.cell_h, '', border=0)
+        self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
+        self.cell(15, self.cell_h, 'Max Marks:', border=1)
+
+        for i in range(3, len(df)):
+            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
         
-            
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 8, f"Expt.{i-2}", border=1,align='C')
+        self.set_xy(col_widths[0], self.get_y() + self.cell_h)
+        self.cell(col_widths[0], self.cell_h, '', border=0)
+        self.cell(col_widths[1], self.cell_h, '', border=0)
+        self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
+        self.cell(15, self.cell_h, 'Division:', border=1)
+        self.set_font('Arial', 'B', 5)
+        for i in range(3, len(df)):
+            for j in range(4):
+                if j%4==3:
+                    self.cell(col_widths[i]/4, self.cell_h, 'Total', border=1, align='L')
+                else:
+                    self.cell(col_widths[i]/4, self.cell_h, '', border=1, align='L')
+        self.set_font('Arial', 'B', 10)
         self.ln()
 
-        for i in range(3):
-            self.cell(col_widths[i], 8, '', border=0)
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 8, "", border=1, align='C')
-        self.ln()
-        self.set_xy(x + col_widths[0]+col_widths[1]+col_widths[2], y+16)
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 8, "Date:", border=1, align='L')
-        self.ln()
-        self.set_xy(x + sum(col_widths[0:3]), y+24)
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 8, "Max.Marks", border=1, align='L')
-        self.ln()
-        self.set_xy(x + sum(col_widths[0:2]), y+32)
-        self.cell(col_widths[2], 8, "Division of Marks --->", border=1, align='L')
-        for i in range(1,max_columns_per_page+1):
-            if i%4==0:
-                self.cell(6,8,"Total",border=1,align='C')
-            else:
-                self.cell(6,8,"",border=1,align='C')
-
-    def table_footer(self, chunk_cols, current_col_widths):
+    def table_footer(self, chunk_cols, chunk_col_widths):
         """ Creates the footer with the 'Intls. of staff:' text merging the first three columns """
-        self.set_font('Arial', 'B', 6)
+        self.set_font('Arial', 'B', 10)
 
-        self.cell(sum(current_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
+        self.cell(sum(chunk_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
 
-        for _ in chunk_cols:
-            self.cell(6, self.cell_h, '', border=1)
+        for _, width in zip(chunk_cols, chunk_col_widths[3:]):
+            self.cell(width, self.cell_h, '', border=1)
         self.ln()
 
-    def draw_table(self, df, col_widths, split_at):
+    @staticmethod
+    def find_max_index(nums, threshold):
+        """
+        Find the maximum index x such that the sum of values from 0 to x is less than the given threshold.
 
-        fixed_cols = list(data_frame.columns[:3])
-        extra_cols = [col for col in df.columns if col not in fixed_cols]
-        #print(extra_cols)
+        Args:
+            nums (list): A list of numbers.
+            threshold (int): The threshold value.
 
-        # self.set_font('Arial', '', 8)
+        Returns:
+            int: The maximum index x.
+        """
+        total_sum = 0
+        max_index = -1
 
-        for chunk_start in range(0, len(extra_cols), split_at):
-            #print(split_at//4)
-            header_chunk_cols = extra_cols[chunk_start:chunk_start + (split_at//4)]
-            chunk_cols = extra_cols[chunk_start:chunk_start + split_at]
-            #print(chunk_cols)
-            header_col_widths = col_widths + [24] * len(chunk_cols)
-            current_col_widths = col_widths + [6] * len(chunk_cols)
-            #print(current_col_widths)
+        for i, num in enumerate(nums):
+            total_sum += num
+            if total_sum < threshold:
+                max_index = i
+            else:
+                break
+
+        return max_index
+
+    def draw_table(self, df, col_widths):
+
+        fixed_cols = list(df.columns[:3])
+        extra_cols = list(df.columns[3:])
+
+        fixed_col_widths = col_widths[:3]
+        extra_col_widths = col_widths[3:]
+
+        split_at = 0
+        if sum(col_widths) + pdf.l_margin + pdf.r_margin > pdf.w:
+            split_at = self.find_max_index(extra_col_widths,
+                                           pdf.w - pdf.l_margin - pdf.r_margin - sum(col_widths[:3])) + 1
+
+        # noinspection PyUnusedLocal
+        iterations = 0
+        with contextlib.suppress(ZeroDivisionError):
+            iterations = len(extra_cols) // split_at
+        iterations += 1
+
+        chunk_start = 0
+
+        for _ in range(iterations):
+            if split_at == 0:
+                chunk_cols = extra_cols[chunk_start:]
+                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
+            else:
+                chunk_cols = extra_cols[chunk_start:chunk_start + split_at]
+                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:chunk_start + split_at]
+
             self.add_page()
+
+            self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
             x = self.get_x()
-            print(x)
             y = self.get_y()
-            print(y)
-            self.table_header(fixed_cols + header_chunk_cols, header_col_widths)
-            self.set_xy(x, y+40)
+            self.set_xy(0 + col_widths[0], y)
             for idx, row in df.iterrows():
-                
-                self.cell(current_col_widths[0], self.cell_h, str(row['No.']), border=1, align='C')
-                self.cell(current_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
-                self.cell(current_col_widths[2], self.cell_h, str(row['Name of Student']), border=1, align='L')
-                for col in chunk_cols:
-                    self.cell(6, self.cell_h, str(row[col]), border=1, align='C')
+
+                self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
+                self.cell(chunk_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
+                self.cell(chunk_col_widths[2], self.cell_h, str(row['Name of Student']), border=1, align='L')
+
+                for col, width in zip(chunk_cols, chunk_col_widths[3:]):
+                    self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
                 self.ln()
 
-                if self.get_y() > 180:  # Approximate height for A4 in landscape mode
-                    self.table_footer(chunk_cols, current_col_widths)
+                if self.get_y() > 180:
+                    self.table_footer(chunk_cols, chunk_col_widths)
                     self.add_page()
-                    self.table_header(fixed_cols + header_chunk_cols, header_col_widths)
+                    self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
                     x = self.get_x()
                     y = self.get_y()
-                    self.set_xy(10, y+8)
-
+                    self.set_xy(0 + col_widths[0], y)
             # keep adding empty rows to fill the page
-            while self.get_y() < 185:
-                for i in range(len(current_col_widths)):
-                    self.cell(current_col_widths[i], self.cell_h, '', border=1)
+            while self.get_y() < 180:
+                for i in range(len(fixed_cols) + len(chunk_cols)):
+                    self.cell(chunk_col_widths[i], self.cell_h, '', border=1)
                 self.ln()
 
-            self.table_footer(chunk_cols, current_col_widths)
+            self.table_footer(chunk_cols, chunk_col_widths)
 
+            chunk_start += split_at
 
-max_columns_per_page = 24
 
 pdf = PDF(orientation='L')
 pdf.set_auto_page_break(auto=True, margin=10)
-pdf.draw_table(data_frame, [10, 40, 60], max_columns_per_page)
-pdf.output('attendance.pdf')
+pdf.draw_table(data_frame, widths)
+pdf.output('marks_sheet.pdf')
 
 print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
