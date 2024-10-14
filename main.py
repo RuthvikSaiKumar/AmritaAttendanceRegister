@@ -1,18 +1,16 @@
-import pickle
-import fpdf
-import pandas as pd
+from PySide6.QtWidgets import QApplication
+import ui
+import sys
+import qdarktheme
 
-data = []
+qdarktheme.enable_hi_dpi()
+app = QApplication(sys.argv)
+qdarktheme.setup_theme('auto')
+window = ui.MainWindow()
+
+window.show()
+app.exec()
 
 
-def add_student(reg, name):
-    data.append([reg, name])
-
-
-def save_to_file(file_name):
-    pickle.dump(data, open(file_name, 'wb'))
-
-
-def load_from_file(file_name):
-    global data
-    data = pickle.load(open('students.txt', 'rb'))
+# todo: give meaningful names to the classes, functions, and variables
+# todo: add temporary attendance or full attendance button for generating

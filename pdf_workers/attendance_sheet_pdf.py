@@ -1,97 +1,45 @@
 import contextlib
-
 import pandas as pd
 from fpdf import FPDF
-
-# todo: handle long names with ellipsis
-
-num_students = 62
-end_sem_type = 'Written'  # or Project
-
-# format (number of columns, width)
-requirements = {
-    'Roll No.': (1, 10),
-    'Reg. No.': (1, 40),
-    'Name of Student': (1, 60),
-    'Mid Sem': (1, 20),
-    'Missed Mid Sem': (1, 25),
-    'Quiz': (4, 13),
-    'Missed Quiz': (1, 20),
-    'Assignment': (1, 20),
-    'Sessional Marks': (1, 25),
-    f'End Sem ({end_sem_type})': (1, 25),
-    'Total Marks': (1, 20),
-    'Grade': (1, 20)
-}
-
-data = {}
-widths = []
-
-for name, value in requirements.items():
-    for count in range(value[0]):
-        data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
-        widths.append(value[1])
-
-data_frame = pd.DataFrame(data)
 
 
 class PDF(FPDF):
     cell_h = 7
 
     def header(self):
-        self.set_font('Arial', 'B', 8)
-        self.cell(0, 8, 'MARKS SHEET', border=0, ln=1, align='C')
+        self.set_font('Arial', '', 6)
+        self.cell(0, 8, f'ATTENDANCE SHEET Code No./ Course/ {"_" * 50} Sem / Section / Year {"_" * 70}',
+                  border=0, ln=1, align='L')
 
     def table_header(self, df, col_widths):
-        # sourcery skip: extract-duplicate-method
 
-        self.set_font('Arial', '', 7)
-
-        # top row
+        self.set_font('Arial', 'B', 10)
 
         # roll no.
         x = self.get_x()
         y = self.get_y()
 
         self.set_x(x)
-        self.multi_cell(col_widths[0], self.cell_h * 1.5, df[0], border=1, align='C')
+        self.multi_cell(col_widths[0], self.cell_h, df[0], border=1, align='C')
         self.set_xy(x + col_widths[0], y)
 
-        self.cell(col_widths[1], self.cell_h * 3, df[1], border=1, align='C')
-        self.cell(col_widths[2] - 15, self.cell_h * 3, df[2], border=1, align='C')
+        # reg no. and name
+        for i in range(1, 3):
+            self.cell(col_widths[i], self.cell_h * 2, df[i], border=1, align='C')
 
-        self.cell(15, self.cell_h, 'Evaluation:', border=1)
+        # days (chunk)
+        for i in range(3, len(df)):
+            self.cell(col_widths[i], self.cell_h, '', border=1)
 
+        self.ln()
+
+        # empty for the first three columns
+        for i in range(3):
+            self.cell(col_widths[i], self.cell_h, '', border=0)
+
+        # days (chunk)
         for i in range(3, len(df)):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
-
-        self.ln()
-
-        # middle row
-
-        # empty for the first three columns
-        self.cell(col_widths[0], self.cell_h, '', border=0)
-        self.cell(col_widths[1], self.cell_h, '', border=0)
-        self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
-
-        self.cell(15, self.cell_h, 'Date:', border=1)
-
-        for i in range(3, len(df)):
-            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
-
-        self.ln()
-
-        # bottom row
-
-        # empty for the first three columns
-        self.cell(col_widths[0], self.cell_h, '', border=0)
-        self.cell(col_widths[1], self.cell_h, '', border=0)
-        self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
-
-        self.cell(15, self.cell_h, 'Max Marks:', border=1)
-
-        for i in range(3, len(df)):
-            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
 
         self.ln()
 
@@ -130,6 +78,16 @@ class PDF(FPDF):
         return max_index
 
     def draw_table(self, df, col_widths):
+        """
+        Draws a table in a PDF document with column splitting and repeating headers in landscape mode.
+
+        Args:
+            df: A pandas DataFrame containing the data to be displayed in the table.
+            col_widths: A list of integers representing the widths of each column in the table.
+
+        Returns:
+            None
+        """
 
         fixed_cols = list(df.columns[:3])
         extra_cols = list(df.columns[3:])
@@ -138,9 +96,9 @@ class PDF(FPDF):
         extra_col_widths = col_widths[3:]
 
         split_at = 0
-        if sum(col_widths) + pdf.l_margin + pdf.r_margin > pdf.w:
+        if sum(col_widths) + self.l_margin + self.r_margin > self.w:
             split_at = self.find_max_index(extra_col_widths,
-                                           pdf.w - pdf.l_margin - pdf.r_margin - sum(col_widths[:3])) + 1
+                                           self.w - self.l_margin - self.r_margin - sum(col_widths[:3])) + 1
 
         # noinspection PyUnusedLocal
         iterations = 0
@@ -163,10 +121,16 @@ class PDF(FPDF):
             self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
 
             for idx, row in df.iterrows():
+                self.set_font('Arial', '', 10)
 
                 self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
                 self.cell(chunk_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
-                self.cell(chunk_col_widths[2], self.cell_h, str(row['Name of Student']), border=1, align='L')
+                # check if the name is too long (longer than the width of the cell) and add ellipsis
+                name = str(row['Name of Student'])
+                if self.get_string_width(name) > chunk_col_widths[2]:
+                    ratio = chunk_col_widths[2] / self.get_string_width(name)
+                    name = name[:int(len(name) * ratio) - 3] + '...'
+                self.cell(chunk_col_widths[2], self.cell_h, name, border=1, align='L')
 
                 for col, width in zip(chunk_cols, chunk_col_widths[3:]):
                     self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
@@ -188,9 +152,39 @@ class PDF(FPDF):
             chunk_start += split_at
 
 
-pdf = PDF(orientation='L')
-pdf.set_auto_page_break(auto=True, margin=10)
-pdf.draw_table(data_frame, widths)
-pdf.output('marks_sheet.pdf')
+def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='attendance.pdf'):
+    requirements = {
+        'Roll No.': (1, 10),
+        'Reg. No.': (1, 40),
+        'Name of Student': (1, 60),
+    }
 
-print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+    for day in range(1, days + 1):
+        requirements[str(day)] = (1, 8)
+
+    num_students = len(students)
+
+    data = {}
+    widths = []
+
+    for name, value in requirements.items():
+        for count in range(value[0]):
+            data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
+            widths.append(value[1])
+
+    data_frame = pd.DataFrame(data)
+
+    data_frame['Roll No.'] = data_frame.index + 1
+    data_frame['Reg. No.'] = students[0]
+    data_frame['Name of Student'] = students[1]
+
+    pdf = PDF(orientation='L')
+    pdf.set_auto_page_break(auto=True, margin=10)
+    pdf.draw_table(data_frame, widths)
+    pdf.output(filename)
+
+    print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+
+
+if __name__ == '__main__':
+    generate_attendance_sheet(pd.read_csv('students.csv'), 30)
