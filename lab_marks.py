@@ -159,7 +159,7 @@ class PDF(FPDF):
 
         chunk_start = 0
 
-        for _ in range(iterations):
+        for _ in range(iterations-1):################changed this to iterations-1######
             if split_at == 0:
                 chunk_cols = extra_cols[chunk_start:]
                 chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
