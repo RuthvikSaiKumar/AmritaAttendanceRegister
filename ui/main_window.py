@@ -915,10 +915,16 @@ class MainWindow(QMainWindow):
     def on_temp_attendance_button_clicked(self):
         file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
 
+        if not file_name:
+            return
+
         pdf_workers.attendance_sheet_pdf.generate_attendance_sheet(self.create_data_frame(), 20, file_name)
 
     def on_attendance_button_clicked(self):
         file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
+
+        if not file_name:
+            return
 
         pdf_workers.attendance_sheet_pdf.generate_attendance_sheet(self.create_data_frame(),
                                                                    self.num_days_spinner.value(), file_name)
@@ -942,9 +948,17 @@ class MainWindow(QMainWindow):
 
         file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
 
+        if not file_name:
+            return
+
         pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, file_name)
 
     def on_attendance_marks_button_clicked(self):
+        file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
+
+        if not file_name:
+            return
+
         pdf_workers.attendance_sheet_pdf.generate_attendance_sheet(self.create_data_frame(),
                                                                    self.num_days_spinner.value(), 'a.pdf')
 
@@ -964,8 +978,6 @@ class MainWindow(QMainWindow):
         }
 
         pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, 'm.pdf')
-
-        file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
 
         pdf_workers.merger.merge_pdfs('a.pdf', 'm.pdf', file_name)
 

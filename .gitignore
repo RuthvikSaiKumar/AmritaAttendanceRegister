@@ -234,8 +234,7 @@ fabric.properties
 
 ########################################################################################
 
-pdf_workers/students.csv
-attendance.pdf
-marks_sheet.pdf
-pdf_workers/merged.pdf
+pdf_workers/*.csv
+pdf_workers/*.pdf
+*.pdf
 .idea/

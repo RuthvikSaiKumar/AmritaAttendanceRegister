@@ -175,8 +175,8 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
     data_frame = pd.DataFrame(data)
 
     data_frame['Roll No.'] = data_frame.index + 1
-    data_frame['Reg. No.'] = students[0]
-    data_frame['Name of Student'] = students[1]
+    data_frame['Reg. No.'] = students.iloc[:, 0]
+    data_frame['Name of Student'] = students.iloc[:, 1]
 
     pdf = PDF(orientation='L')
     pdf.set_auto_page_break(auto=True, margin=10)
