@@ -187,4 +187,4 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
 
 if __name__ == '__main__':
-    generate_attendance_sheet(pd.read_csv('students.csv'), 30)
+    generate_attendance_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), 30)
