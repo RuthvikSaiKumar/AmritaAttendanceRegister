@@ -5,32 +5,32 @@ from fpdf import FPDF
 
 # todo: handle long names with ellipsis
 
-num_students = 62
-end_sem_type = 'Written'  # or Project
+# num_students = 62
+# end_sem_type = 'Written'  # or Project
 
-# format (number of columns, width)
-requirements = {
-    'Roll No.': (1, 10),
-    'Reg. No.': (1, 40),
-    'Name of Student': (1, 60),
-    '1': (1, 24),
-    '2': (1, 24),
-    '3': (4, 24),
-    '4': (1, 24),
-    '5': (1, 24),
-    '6': (1, 24)
-}
+# # format (number of columns, width)
+# requirements = {
+#     'Roll No.': (1, 10),
+#     'Reg. No.': (1, 40),
+#     'Name of Student': (1, 60),
+#     '1': (1, 24),
+#     '2': (1, 24),
+#     '3': (4, 24),
+#     '4': (1, 24),
+#     '5': (1, 24),
+#     '6': (1, 24)
+# }
 
-data = {}
-widths = []
+# data = {}
+# widths = []
 
-for name, value in requirements.items():
-    for count in range(value[0]):
-        data[f'{name}'] = [''] * num_students
-        widths.append(value[1])
-print(widths)
+# for name, value in requirements.items():
+#     for count in range(value[0]):
+#         data[f'{name}'] = [''] * num_students
+#         widths.append(value[1])
+# print(widths)
 
-data_frame = pd.DataFrame(data)
+# data_frame = pd.DataFrame(data)
 
 
 class PDF(FPDF):
@@ -147,9 +147,9 @@ class PDF(FPDF):
         extra_col_widths = col_widths[3:]
 
         split_at = 0
-        if sum(col_widths) + pdf.l_margin + pdf.r_margin > pdf.w:
+        if sum(col_widths) + self.l_margin + self.r_margin > self.w:
             split_at = self.find_max_index(extra_col_widths,
-                                           pdf.w - pdf.l_margin - pdf.r_margin - sum(col_widths[:3])) + 1
+                                           self.w - self.l_margin - self.r_margin - sum(col_widths[:3])) + 1
 
         # noinspection PyUnusedLocal
         iterations = 0
@@ -201,9 +201,52 @@ class PDF(FPDF):
             chunk_start += split_at
 
 
-pdf = PDF(orientation='L')
-pdf.set_auto_page_break(auto=True, margin=10)
-pdf.draw_table(data_frame, widths)
-pdf.output('marks_sheet.pdf')
+# pdf = PDF(orientation='L')
+# pdf.set_auto_page_break(auto=True, margin=10)
+# pdf.draw_table(data_frame, widths)
+# pdf.output('marks_sheet.pdf')
 
-print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+# print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+
+def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='marks_sheet.pdf'):
+    num_students = len(students)
+
+    data = {}
+    widths = []
+
+    for name, value in requirements.items():
+        for count in range(value[0]):
+            data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
+            widths.append(value[1])
+
+    data_frame = pd.DataFrame(data)
+
+    data_frame['Roll No.'] = data_frame.index + 1
+    data_frame['Reg. No.'] = students.iloc[:,0]
+    data_frame['Name of Student'] = students.iloc[:,1]
+
+    pdf = PDF(orientation='L')
+    pdf.set_auto_page_break(auto=True, margin=10)
+    pdf.draw_table(data_frame, widths)
+    pdf.output(filename)
+
+    print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+
+
+if __name__ == '__main__':
+    end_sem_type = 'Written'  # or Project
+
+    # format (number of columns, width)
+    requirements_dict = {
+        'Roll No.': (1, 10),
+        'Reg. No.': (1, 40),
+        'Name of Student': (1, 60),
+        '1': (1, 24),
+        '2': (1, 24),
+        '3': (1, 24),
+        '4': (1, 24),
+        '5': (1, 24),
+        '6': (1, 24)
+    }
+
+    generate_marks_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), requirements_dict)

@@ -206,4 +206,4 @@ if __name__ == '__main__':
         'Grade': (1, 15)
     }
 
-    generate_marks_sheet(pd.read_csv('students.csv'), requirements_dict)
+    generate_marks_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), requirements_dict)
