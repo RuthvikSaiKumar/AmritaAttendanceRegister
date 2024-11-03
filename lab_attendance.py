@@ -24,19 +24,21 @@ class PDF(FPDF):
 
         for i in range(1, 3):
             self.cell(col_widths[i], 24, columns[i], border=1, align='C')
-        for i in range(3, len(columns)-2):
+        for i in range(3, len(columns)):
             self.cell(col_widths[i], 16, '', border=1)
         self.ln()
         # Create empty cells for extra columns (attendance days)
         for i in range(3):
             self.cell(col_widths[i], 8, '', border=0)
-        for i in range(3, len(columns)-2):
+        for i in range(3, len(columns)):
             self.cell(col_widths[i], 8, columns[i], border=1, align='C')
 
-        self.set_xy(self.get_x(), y)
-        self.multi_cell(col_widths[-2], 8, 'Classes\nConducted /\nScheduled', border=1, align='C')
-        self.set_xy(self.get_x() + sum(col_widths[0:-1]), y)  # Move to the next cell
-        self.multi_cell(col_widths[-1], 12, '% of\nAttend', border=1, align='C')
+        self.ln()
+
+        # self.set_xy(self.get_x(), y)
+        # self.multi_cell(col_widths[-2], 8, 'Classes\nConducted /\nScheduled', border=1, align='C')
+        # self.set_xy(self.get_x() + sum(col_widths[:-1]), y)
+        # self.multi_cell(col_widths[-1], 12, '% of\nAttend', border=1, align='C')
 
     def table_footer(self, chunk_cols, chunk_col_widths):
         """ Creates the footer with the 'Intls. of staff:' text merging the first three columns """
@@ -147,7 +149,7 @@ class PDF(FPDF):
             chunk_start += split_at
 
 
-def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='attendance.pdf'):
+def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='lab_attendance.pdf'):
     requirements = {
         'Roll No.': (1, 10),
         'Reg. No.': (1, 40),
@@ -157,8 +159,8 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
     for day in range(1, days + 1):
         requirements[str(day)] = (1, 6)
-    requirements['Classes Conducted / Scheduled']= (1, 30)
-    requirements['% of Attend']= (1, 20)
+    requirements['Classes Conducted / Scheduled'] = (1, 25)
+    requirements['% of Attend'] = (1, 20)
 
     print(requirements)
     num_students = len(students)
@@ -174,8 +176,8 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
     data_frame = pd.DataFrame(data)
 
     data_frame['Roll No.'] = data_frame.index + 1
-    data_frame['Reg. No.'] = students.iloc[:,0]
-    data_frame['Name of Student'] = students.iloc[:,1]
+    data_frame['Reg. No.'] = students.iloc[:, 0]
+    data_frame['Name of Student'] = students.iloc[:, 1]
 
     pdf = PDF(orientation='L')
     pdf.set_auto_page_break(auto=True, margin=10)
@@ -186,4 +188,4 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
 
 if __name__ == '__main__':
-    generate_attendance_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), 30)
+    generate_attendance_sheet(pd.read_csv('pdf_workers/students.csv'), 20)

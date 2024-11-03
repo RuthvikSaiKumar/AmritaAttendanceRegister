@@ -36,8 +36,6 @@ class MainWindow(QMainWindow):
     hlayout: QHBoxLayout
     app_usage_list_label: QLabel
 
-    # todo: make all single use buttons to local and return the button from function instead of making global
-
     def __init__(self):
         super().__init__()
 
@@ -122,7 +120,7 @@ class MainWindow(QMainWindow):
         image.setMinimumSize(50, 50)
         image.setMaximumSize(50, 50)
 
-        title = QLabel("Attendance/Marks Sheet Generator")
+        title = QLabel("Attendance / Marks Sheet Generator")
         title.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         title.setStyleSheet("""
             font-family: Century Gothic;
@@ -790,7 +788,6 @@ class MainWindow(QMainWindow):
     @staticmethod
     def on_github_clicked():
         import webbrowser
-        # todo: change it to organization's repository
         url = "https://github.com/RuthvikSaiKumar/AmritaAttendanceRegister"
         webbrowser.open(url)
 

@@ -1,7 +1,9 @@
 import contextlib
 
+import itertools
 import pandas as pd
 from fpdf import FPDF
+
 
 # todo: handle long names with ellipsis
 
@@ -59,7 +61,7 @@ class PDF(FPDF):
         self.cell(col_widths[2] - 15, self.cell_h * 4, df[2], border=1, align='C')
 
         self.cell(15, self.cell_h, 'Experiment:', border=1)
-    
+
         for i in range(3, len(df)):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
 
@@ -88,19 +90,18 @@ class PDF(FPDF):
 
         for i in range(3, len(df)):
             self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
-        
+
         self.set_xy(col_widths[0], self.get_y() + self.cell_h)
         self.cell(col_widths[0], self.cell_h, '', border=0)
         self.cell(col_widths[1], self.cell_h, '', border=0)
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Division:', border=1)
         self.set_font('Arial', 'B', 5)
-        for i in range(3, len(df)):
-            for j in range(4):
-                if j%4==3:
-                    self.cell(col_widths[i]/4, self.cell_h, 'Total', border=1, align='L')
-                else:
-                    self.cell(col_widths[i]/4, self.cell_h, '', border=1, align='L')
+        for i, j in itertools.product(range(3, len(df)), range(4)):
+            if j % 4 == 3:
+                self.cell(col_widths[i] / 4, self.cell_h, 'Total', border=1, align='L')
+            else:
+                self.cell(col_widths[i] / 4, self.cell_h, '', border=1, align='L')
         self.set_font('Arial', 'B', 10)
         self.ln()
 
@@ -159,7 +160,7 @@ class PDF(FPDF):
 
         chunk_start = 0
 
-        for _ in range(iterations-1):################changed this to iterations-1######
+        for _ in range(iterations - 1):  ################ changed this to iterations-1######
             if split_at == 0:
                 chunk_cols = extra_cols[chunk_start:]
                 chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
@@ -208,7 +209,7 @@ class PDF(FPDF):
 
 # print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
 
-def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='marks_sheet.pdf'):
+def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='lab_marks_sheet.pdf'):
     num_students = len(students)
 
     data = {}
@@ -222,8 +223,8 @@ def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='m
     data_frame = pd.DataFrame(data)
 
     data_frame['Roll No.'] = data_frame.index + 1
-    data_frame['Reg. No.'] = students.iloc[:,0]
-    data_frame['Name of Student'] = students.iloc[:,1]
+    data_frame['Reg. No.'] = students.iloc[:, 0]
+    data_frame['Name of Student'] = students.iloc[:, 1]
 
     pdf = PDF(orientation='L')
     pdf.set_auto_page_break(auto=True, margin=10)
@@ -243,10 +244,10 @@ if __name__ == '__main__':
         'Name of Student': (1, 60),
         '1': (1, 24),
         '2': (1, 24),
-        '3': (1, 24),
+        '3': (2, 24),
         '4': (1, 24),
         '5': (1, 24),
         '6': (1, 24)
     }
 
-    generate_marks_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), requirements_dict)
+    generate_marks_sheet(pd.read_csv('pdf_workers/students.csv'), requirements_dict)

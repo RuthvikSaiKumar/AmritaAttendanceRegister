@@ -11,6 +11,4 @@ window = ui.MainWindow()
 window.show()
 app.exec()
 
-
 # todo: give meaningful names to the classes, functions, and variables
-# todo: add temporary attendance or full attendance button for generating

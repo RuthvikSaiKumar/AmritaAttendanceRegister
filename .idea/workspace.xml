@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="theory gui all working">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="fixed pandas issue of selecting columns by name instead of index">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_attendance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab_marks.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_marks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +59,8 @@
     "Python.g_main.executor": "Run",
     "Python.graphics.executor": "Run",
     "Python.lab_attendance.executor": "Run",
+    "Python.lab_eval.executor": "Run",
+    "Python.lab_marks.executor": "Run",
     "Python.lkzdjg lkS.executor": "Run",
     "Python.main.executor": "Run",
     "Python.main_window.executor": "Run",
@@ -191,7 +194,15 @@
       <option name="project" value="LOCAL" />
       <updated>1728879241658</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fixed pandas issue of selecting columns by name instead of index">
+      <option name="closed" value="true" />
+      <created>1729311278495</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729311278495</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -217,6 +228,7 @@
     <MESSAGE value="standardized the pdf generation requirements for both attendance and marks" />
     <MESSAGE value="minor edits" />
     <MESSAGE value="theory gui all working" />
-    <option name="LAST_COMMIT_MESSAGE" value="theory gui all working" />
+    <MESSAGE value="fixed pandas issue of selecting columns by name instead of index" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed pandas issue of selecting columns by name instead of index" />
   </component>
 </project>
