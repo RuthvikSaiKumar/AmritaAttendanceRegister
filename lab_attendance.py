@@ -7,11 +7,12 @@ class PDF(FPDF):
     cell_h = 7
 
     def header(self):
-        self.set_font('Arial', '', 6)
-        self.cell(0, 8, f'ATTENDANCE SHEET Code No./ Course/ {"_" * 50} Sem / Section / Year {"_" * 70}',
+        self.set_font('Arial', '', 10)
+        self.cell(0, 8, f'ATTENDANCE SHEET(Practical Subject) Code No./ Course/ Catg. {"_" * 30} '
+                        f'Sem / Section / Year {"_" * 35}',
                   border=0, ln=1, align='L')
 
-    def table_header(self, columns, col_widths):
+    def table_header(self, columns, col_widths):  # sourcery skip: extract-method
 
         self.set_font('Arial', 'B', 10)
 
@@ -24,21 +25,36 @@ class PDF(FPDF):
 
         for i in range(1, 3):
             self.cell(col_widths[i], 24, columns[i], border=1, align='C')
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 16, '', border=1)
+        self.cell(sum(col_widths[3:]) if col_widths[-2] == 6 else sum(col_widths[3:-2]),
+                  8, 'DATE', border=1, align='C')
+
         self.ln()
-        # Create empty cells for extra columns (attendance days)
+
         for i in range(3):
             self.cell(col_widths[i], 8, '', border=0)
-        for i in range(3, len(columns)):
-            self.cell(col_widths[i], 8, columns[i], border=1, align='C')
-
+        for i in range(3, len(columns) if col_widths[-2] == 6 else len(columns) - 2):
+            self.cell(col_widths[i], 8, '', border=1)
         self.ln()
+        # Create empty cells for extra columns (attendance days)
 
-        # self.set_xy(self.get_x(), y)
-        # self.multi_cell(col_widths[-2], 8, 'Classes\nConducted /\nScheduled', border=1, align='C')
-        # self.set_xy(self.get_x() + sum(col_widths[:-1]), y)
-        # self.multi_cell(col_widths[-1], 12, '% of\nAttend', border=1, align='C')
+        if col_widths[-2] == 6:
+            for i in range(3):
+                self.cell(col_widths[i], 8, '', border=0)
+            for i in range(3, len(columns)):
+                self.cell(col_widths[i], 8, columns[i], border=1, align='C')
+        else:
+            for i in range(3):
+                self.cell(col_widths[i], 8, '', border=0)
+            for i in range(3, len(columns) - 2):
+                self.cell(col_widths[i], 8, columns[i], border=1, align='C')
+
+            self.set_xy(self.get_x(), y)
+            self.multi_cell(col_widths[-2], 8, columns[-2], border=1, align='C')
+            self.set_xy(self.get_x() + sum(col_widths[:-1]), y)
+            self.multi_cell(col_widths[-1], 12, columns[-1], border=1, align='C')
+
+        if col_widths[-2] == 6:
+            self.ln()
 
     def table_footer(self, chunk_cols, chunk_col_widths):
         """ Creates the footer with the 'Intls. of staff:' text merging the first three columns """
@@ -101,7 +117,8 @@ class PDF(FPDF):
         iterations = 0
         with contextlib.suppress(ZeroDivisionError):
             iterations = len(extra_cols) // split_at
-        iterations += 1
+        if iterations == 0:
+            iterations += 1
 
         chunk_start = 0
 
@@ -159,10 +176,10 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='lab_a
 
     for day in range(1, days + 1):
         requirements[str(day)] = (1, 6)
+
     requirements['Classes Conducted / Scheduled'] = (1, 25)
     requirements['% of Attend'] = (1, 20)
 
-    print(requirements)
     num_students = len(students)
 
     data = {}
@@ -172,7 +189,7 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='lab_a
         for count in range(value[0]):
             data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
             widths.append(value[1])
-    print(widths)
+
     data_frame = pd.DataFrame(data)
 
     data_frame['Roll No.'] = data_frame.index + 1

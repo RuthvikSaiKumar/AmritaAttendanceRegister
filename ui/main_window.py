@@ -454,7 +454,7 @@ class MainWindow(QMainWindow):
         line.setFixedHeight(3)
         line.setStyleSheet("""background-color: #16DB65;""")
 
-        num_days_label = QLabel("Number of Days")
+        num_days_label = QLabel("Number of Classes")
         num_days_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         num_days_label.setStyleSheet("""
             font-family: Century Gothic;
@@ -932,14 +932,14 @@ class MainWindow(QMainWindow):
             'Roll No.': (1, 10),
             'Reg. No.': (1, 40),
             'Name of Student': (1, 60),
-            'Mid Sem': (self.midsem_checkbox.isChecked(), 20),
-            'Missed Mid Sem': (self.missed_midsem_checkbox.isChecked(), 25),
-            'Quiz': (self.quiz_spinbox.value(), 13),
-            'Missed Quiz': (self.missed_quiz_checkbox.isChecked(), 20),
-            'Assignment': (self.assignments_spinbox.value(), 20),
-            'Sessional Marks': (1, 25),
-            f'End Sem ({self.endsem_dropdown.currentText()})': (1, 25),
-            'Total Marks': (1, 20),
+            'M.S.': (self.midsem_checkbox.isChecked(), 10),
+            'Missed M.S.': (self.missed_midsem_checkbox.isChecked(), 20),
+            'Q': (self.quiz_spinbox.value(), 10),
+            'Missed Q': (self.missed_quiz_checkbox.isChecked(), 15),
+            'A': (self.assignments_spinbox.value(), 10),
+            'Sessional': (1, 15),
+            f'E.M. ({self.endsem_dropdown.currentText()})': (1, 20),
+            'Total': (1, 15),
             'Grade': (1, 15)
         }
 
@@ -963,14 +963,14 @@ class MainWindow(QMainWindow):
             'Roll No.': (1, 10),
             'Reg. No.': (1, 40),
             'Name of Student': (1, 60),
-            'Mid Sem': (self.midsem_checkbox.isChecked(), 20),
-            'Missed Mid Sem': (self.missed_midsem_checkbox.isChecked(), 25),
-            'Quiz': (self.quiz_spinbox.value(), 13),
-            'Missed Quiz': (self.missed_quiz_checkbox.isChecked(), 20),
-            'Assignment': (self.assignments_spinbox.value(), 20),
-            'Sessional Marks': (1, 25),
-            f'End Sem ({self.endsem_dropdown.currentText()})': (1, 25),
-            'Total Marks': (1, 20),
+            'M.S.': (self.midsem_checkbox.isChecked(), 10),
+            'Missed M.S.': (self.missed_midsem_checkbox.isChecked(), 20),
+            'Q': (self.quiz_spinbox.value(), 10),
+            'Missed Q': (self.missed_quiz_checkbox.isChecked(), 15),
+            'A': (self.assignments_spinbox.value(), 10),
+            'Sessional': (1, 15),
+            f'E.M. ({self.endsem_dropdown.currentText()})': (1, 20),
+            'Total': (1, 15),
             'Grade': (1, 15)
         }
 

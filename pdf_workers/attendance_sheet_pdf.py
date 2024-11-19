@@ -1,4 +1,3 @@
-import contextlib
 import pandas as pd
 from fpdf import FPDF
 
@@ -77,7 +76,7 @@ class PDF(FPDF):
 
         return max_index
 
-    def draw_table(self, df, col_widths):
+    def draw_table(self, df, col_widths):  # sourcery skip: low-code-quality
         """
         Draws a table in a PDF document with column splitting and repeating headers in landscape mode.
 
@@ -102,13 +101,14 @@ class PDF(FPDF):
 
         # noinspection PyUnusedLocal
         iterations = 0
-        with contextlib.suppress(ZeroDivisionError):
+        try:
             iterations = len(extra_cols) // split_at
-        iterations += 1
+        except ZeroDivisionError:
+            iterations = 1
 
         chunk_start = 0
 
-        for _ in range(iterations):
+        for _ in range(iterations + 1):
             if split_at == 0:
                 chunk_cols = extra_cols[chunk_start:]
                 chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
@@ -136,7 +136,7 @@ class PDF(FPDF):
                     self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
                 self.ln()
 
-                if self.get_y() > 180:
+                if self.get_y() > 180 and idx < len(df) - 1:
                     self.table_footer(chunk_cols, chunk_col_widths)
                     self.add_page()
                     self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
@@ -176,8 +176,8 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
     data_frame['Roll No.'] = data_frame.index + 1
 
-    data_frame['Reg. No.'] = students.iloc[:,0]
-    data_frame['Name of Student'] = students.iloc[:,1]
+    data_frame['Reg. No.'] = students.iloc[:, 0]
+    data_frame['Name of Student'] = students.iloc[:, 1]
 
     data_frame['Reg. No.'] = students.iloc[:, 0]
     data_frame['Name of Student'] = students.iloc[:, 1]
@@ -191,4 +191,4 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
 
 if __name__ == '__main__':
-    generate_attendance_sheet(pd.read_csv('./students.csv'), 30)
+    generate_attendance_sheet(pd.read_csv('./students.csv'), 20)

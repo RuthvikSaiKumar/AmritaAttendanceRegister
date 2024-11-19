@@ -238,3 +238,4 @@ pdf_workers/*.csv
 pdf_workers/*.pdf
 *.pdf
 .idea/
+.idea/*

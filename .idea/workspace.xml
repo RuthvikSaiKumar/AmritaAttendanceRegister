@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="fixed pandas issue of selecting columns by name instead of index">
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="fixed lab marks thingy and partially lab attendance">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lab_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_attendance.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lab_marks.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_marks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temporary.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,36 +52,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.aklsjfklsaf.executor": "Run",
-    "Python.animate_run.executor": "Run",
-    "Python.attendance_sheet_pdf.executor": "Run",
-    "Python.chat_window_popup.executor": "Run",
-    "Python.espwifi.executor": "Run",
-    "Python.g_main.executor": "Run",
-    "Python.graphics.executor": "Run",
-    "Python.lab_attendance.executor": "Run",
-    "Python.lab_eval.executor": "Run",
-    "Python.lab_marks.executor": "Run",
-    "Python.lkzdjg lkS.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.main_window.executor": "Run",
-    "Python.marks_sheet_pdf.executor": "Run",
-    "Python.merger.executor": "Run",
-    "Python.pdf_saver.executor": "Run",
-    "Python.pyside6_widgets.executor": "Run",
-    "Python.signals.executor": "Run",
-    "Python.tset.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/PycharmProjects/AmritaAttendanceRegister/assets",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.RAE23036_endsem.executor&quot;: &quot;Run&quot;,
+    &quot;Python.aklsjfklsaf.executor&quot;: &quot;Run&quot;,
+    &quot;Python.animate_run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.attendance_sheet_pdf.executor&quot;: &quot;Run&quot;,
+    &quot;Python.chat_window_popup.executor&quot;: &quot;Run&quot;,
+    &quot;Python.endsem.executor&quot;: &quot;Run&quot;,
+    &quot;Python.espwifi.executor&quot;: &quot;Run&quot;,
+    &quot;Python.g_main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.graphics.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lab_attendance.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lab_eval.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lab_marks.executor&quot;: &quot;Run&quot;,
+    &quot;Python.lkzdjg lkS.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main_window.executor&quot;: &quot;Run&quot;,
+    &quot;Python.marks_sheet_pdf.executor&quot;: &quot;Run&quot;,
+    &quot;Python.merger.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pdf_saver.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pyside6_widgets.executor&quot;: &quot;Run&quot;,
+    &quot;Python.signals.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tset.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/AmritaAttendanceRegister/assets&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\PycharmProjects\AmritaAttendanceRegister\assets" />
@@ -202,7 +207,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729311278495</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fixed lab marks thingy and partially lab attendance">
+      <option name="closed" value="true" />
+      <created>1730640911814</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1730640911814</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -229,6 +242,7 @@
     <MESSAGE value="minor edits" />
     <MESSAGE value="theory gui all working" />
     <MESSAGE value="fixed pandas issue of selecting columns by name instead of index" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed pandas issue of selecting columns by name instead of index" />
+    <MESSAGE value="fixed lab marks thingy and partially lab attendance" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed lab marks thingy and partially lab attendance" />
   </component>
 </project>

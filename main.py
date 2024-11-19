@@ -10,5 +10,3 @@ window = ui.MainWindow()
 
 window.show()
 app.exec()
-
-# todo: give meaningful names to the classes, functions, and variables

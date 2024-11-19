@@ -1,4 +1,3 @@
-import contextlib
 import pandas as pd
 from fpdf import FPDF
 
@@ -9,6 +8,7 @@ class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 8)
         self.cell(0, 8, 'MARKS SHEET', border=0, ln=1, align='C')
+        self.cell(0, 8, 'M.S. = Mid Sem, E.M. = End Sem, Q = Quiz, A = Assignment', border=0, ln=1, align='C')
 
     def table_header(self, df, col_widths):
         # sourcery skip: extract-duplicate-method
@@ -97,7 +97,7 @@ class PDF(FPDF):
 
         return max_index
 
-    def draw_table(self, df, col_widths):
+    def draw_table(self, df, col_widths):  # sourcery skip: low-code-quality
 
         fixed_cols = list(df.columns[:3])
         extra_cols = list(df.columns[3:])
@@ -112,9 +112,10 @@ class PDF(FPDF):
 
         # noinspection PyUnusedLocal
         iterations = 0
-        with contextlib.suppress(ZeroDivisionError):
+        try:
             iterations = len(extra_cols) // split_at
-        iterations += 1
+        except ZeroDivisionError:
+            iterations = 1
 
         chunk_start = 0
 
@@ -131,6 +132,7 @@ class PDF(FPDF):
             self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
 
             for idx, row in df.iterrows():
+
                 self.set_font('Arial', '', 10)
 
                 self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
@@ -146,7 +148,7 @@ class PDF(FPDF):
                     self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
                 self.ln()
 
-                if self.get_y() > 180:
+                if self.get_y() > 180 and idx < len(df) - 1:
                     self.table_footer(chunk_cols, chunk_col_widths)
                     self.add_page()
                     self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
@@ -195,15 +197,17 @@ if __name__ == '__main__':
         'Roll No.': (1, 10),
         'Reg. No.': (1, 40),
         'Name of Student': (1, 60),
-        'Mid Sem': (1, 20),
-        'Missed Mid Sem': (1, 25),
-        'Quiz': (3, 13),
-        'Missed Quiz': (1, 20),
-        'Assignment': (1, 20),
-        'Sessional Marks': (1, 25),
-        f'End Sem ({end_sem_type})': (1, 25),
-        'Total Marks': (1, 20),
+        'M.S.': (1, 10),
+        'Missed M.S.': (1, 20),
+        'Q': (3, 10),
+        'Missed Q': (1, 15),
+        'A': (1, 10),
+        'Sessional': (1, 15),
+        f'E.M. ({end_sem_type})': (1, 20),
+        'Total': (1, 15),
         'Grade': (1, 15)
     }
 
-    generate_marks_sheet(pd.read_csv('C:\\Desktop\\Python\\AmritaAttendanceRegister\\pdf_workers\\students.csv'), requirements_dict)
+    # todo: scale the values in a way that they fit the page (only if the columns already are > 50% of the page width)
+
+    generate_marks_sheet(pd.read_csv('./students.csv'), requirements_dict)

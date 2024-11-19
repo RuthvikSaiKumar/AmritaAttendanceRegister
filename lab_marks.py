@@ -1,38 +1,7 @@
 import contextlib
 
-import itertools
 import pandas as pd
 from fpdf import FPDF
-
-
-# todo: handle long names with ellipsis
-
-# num_students = 62
-# end_sem_type = 'Written'  # or Project
-
-# # format (number of columns, width)
-# requirements = {
-#     'Roll No.': (1, 10),
-#     'Reg. No.': (1, 40),
-#     'Name of Student': (1, 60),
-#     '1': (1, 24),
-#     '2': (1, 24),
-#     '3': (4, 24),
-#     '4': (1, 24),
-#     '5': (1, 24),
-#     '6': (1, 24)
-# }
-
-# data = {}
-# widths = []
-
-# for name, value in requirements.items():
-#     for count in range(value[0]):
-#         data[f'{name}'] = [''] * num_students
-#         widths.append(value[1])
-# print(widths)
-
-# data_frame = pd.DataFrame(data)
 
 
 class PDF(FPDF):
@@ -62,10 +31,16 @@ class PDF(FPDF):
 
         self.cell(15, self.cell_h, 'Experiment:', border=1)
 
-        for i in range(3, len(df)):
+        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
 
-        self.ln()
+        if col_widths[-2] == 10:
+            self.cell(col_widths[-2], self.cell_h * 3, df[-2], border=1)
+            self.cell(col_widths[-1], self.cell_h * 3, df[-1], border=1)
+
+            self.set_y(y + self.cell_h)
+
+        # self.ln()
 
         # middle row
 
@@ -75,7 +50,7 @@ class PDF(FPDF):
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Date:', border=1)
 
-        for i in range(3, len(df)):
+        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
 
         self.ln()
@@ -88,20 +63,27 @@ class PDF(FPDF):
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Max Marks:', border=1)
 
-        for i in range(3, len(df)):
+        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
 
-        self.set_xy(col_widths[0], self.get_y() + self.cell_h)
+        self.ln()
+
         self.cell(col_widths[0], self.cell_h, '', border=0)
         self.cell(col_widths[1], self.cell_h, '', border=0)
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Division:', border=1)
         self.set_font('Arial', 'B', 5)
-        for i, j in itertools.product(range(3, len(df)), range(4)):
-            if j % 4 == 3:
-                self.cell(col_widths[i] / 4, self.cell_h, 'Total', border=1, align='L')
+        for i in range(3, len(df)):
+            if col_widths[i] != 10:
+                for j in range(4):
+                    if j % 4 == 3:
+                        self.cell(col_widths[i] / 4, self.cell_h, 'Total' if df[i] not in ['Test', 'End Sem'] else '',
+                                  border=1, align='L')
+                    else:
+                        self.cell(col_widths[i] / 4, self.cell_h, '', border=1, align='L')
             else:
-                self.cell(col_widths[i] / 4, self.cell_h, '', border=1, align='L')
+                self.cell(col_widths[i], self.cell_h, '', border=1)
+
         self.set_font('Arial', 'B', 10)
         self.ln()
 
@@ -112,7 +94,11 @@ class PDF(FPDF):
         self.cell(sum(chunk_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
 
         for _, width in zip(chunk_cols, chunk_col_widths[3:]):
-            self.cell(width, self.cell_h, '', border=1)
+            if width != 10:
+                for _ in range(4):
+                    self.cell(width / 4, self.cell_h, '', border=1)
+            else:
+                self.cell(width, self.cell_h, '', border=1)
         self.ln()
 
     @staticmethod
@@ -139,7 +125,7 @@ class PDF(FPDF):
 
         return max_index
 
-    def draw_table(self, df, col_widths):
+    def draw_table(self, df, col_widths):  # sourcery skip: low-code-quality, use-itertools-product
 
         fixed_cols = list(df.columns[:3])
         extra_cols = list(df.columns[3:])
@@ -156,11 +142,12 @@ class PDF(FPDF):
         iterations = 0
         with contextlib.suppress(ZeroDivisionError):
             iterations = len(extra_cols) // split_at
-        iterations += 1
+        if iterations == 0:
+            iterations += 1
 
         chunk_start = 0
 
-        for _ in range(iterations - 1):  ################ changed this to iterations-1######
+        for _ in range(iterations):
             if split_at == 0:
                 chunk_cols = extra_cols[chunk_start:]
                 chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
@@ -171,43 +158,50 @@ class PDF(FPDF):
             self.add_page()
 
             self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
-            x = self.get_x()
             y = self.get_y()
             self.set_xy(0 + col_widths[0], y)
             for idx, row in df.iterrows():
+                self.set_font('Arial', '', 10)
 
                 self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
                 self.cell(chunk_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
-                self.cell(chunk_col_widths[2], self.cell_h, str(row['Name of Student']), border=1, align='L')
+                # check if the name is too long (longer than the width of the cell) and add ellipsis
+                name = str(row['Name of Student'])
+                if self.get_string_width(name) > chunk_col_widths[2]:
+                    ratio = chunk_col_widths[2] / self.get_string_width(name)
+                    name = name[:int(len(name) * ratio) - 3] + '...'
+                self.cell(chunk_col_widths[2], self.cell_h, name, border=1, align='L')
 
                 for col, width in zip(chunk_cols, chunk_col_widths[3:]):
-                    self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
+                    if width != 10:
+                        for _ in range(4):
+                            self.cell(width / 4, self.cell_h, str(row[col]), border=1, align='C')
+                    else:
+                        self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
                 self.ln()
 
                 if self.get_y() > 180:
                     self.table_footer(chunk_cols, chunk_col_widths)
                     self.add_page()
                     self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
-                    x = self.get_x()
-                    y = self.get_y()
-                    self.set_xy(0 + col_widths[0], y)
+
             # keep adding empty rows to fill the page
             while self.get_y() < 180:
-                for i in range(len(fixed_cols) + len(chunk_cols)):
-                    self.cell(chunk_col_widths[i], self.cell_h, '', border=1)
+
+                for j in range(len(fixed_cols)):
+                    self.cell(chunk_col_widths[j], self.cell_h, '', border=1)
+                for j in range(len(fixed_cols), len(fixed_cols) + len(chunk_cols)):
+                    if chunk_col_widths[j] != 10:
+                        for _ in range(4):
+                            self.cell(chunk_col_widths[j] / 4, self.cell_h, '', border=1)
+                    else:
+                        self.cell(chunk_col_widths[j], self.cell_h, '', border=1)
                 self.ln()
 
             self.table_footer(chunk_cols, chunk_col_widths)
 
             chunk_start += split_at
 
-
-# pdf = PDF(orientation='L')
-# pdf.set_auto_page_break(auto=True, margin=10)
-# pdf.draw_table(data_frame, widths)
-# pdf.output('marks_sheet.pdf')
-
-# print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
 
 def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='lab_marks_sheet.pdf'):
     num_students = len(students)
@@ -235,19 +229,22 @@ def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='l
 
 
 if __name__ == '__main__':
-    end_sem_type = 'Written'  # or Project
 
     # format (number of columns, width)
     requirements_dict = {
         'Roll No.': (1, 10),
-        'Reg. No.': (1, 40),
+        'Reg. No.': (1, 38),
         'Name of Student': (1, 60),
-        '1': (1, 24),
-        '2': (1, 24),
-        '3': (2, 24),
-        '4': (1, 24),
-        '5': (1, 24),
-        '6': (1, 24)
     }
+
+    number_of_experiments = 2
+
+    for k in range(1, number_of_experiments + 1):
+        requirements_dict[str(k)] = (1, 28)
+
+    requirements_dict['Test'] = (1, 28)
+    requirements_dict['End Sem'] = (1, 28)
+    requirements_dict['Total'] = (1, 10)
+    requirements_dict['Grade'] = (1, 10)
 
     generate_marks_sheet(pd.read_csv('pdf_workers/students.csv'), requirements_dict)
