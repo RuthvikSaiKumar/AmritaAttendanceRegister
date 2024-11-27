@@ -1,4 +1,3 @@
-import contextlib
 import pandas as pd
 from fpdf import FPDF
 
@@ -115,10 +114,12 @@ class PDF(FPDF):
 
         # noinspection PyUnusedLocal
         iterations = 0
-        with contextlib.suppress(ZeroDivisionError):
+        try:
             iterations = len(extra_cols) // split_at
-        if iterations == 0:
-            iterations += 1
+            if (len(extra_cols) / split_at) > iterations:
+                iterations += 1
+        except ZeroDivisionError:
+            iterations = 1
 
         chunk_start = 0
 
@@ -201,8 +202,10 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='lab_a
     pdf.draw_table(data_frame, widths)
     pdf.output(filename)
 
+    # todo: if less number of classes are there then expand it to full width of the page
+
     print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
 
 
 if __name__ == '__main__':
-    generate_attendance_sheet(pd.read_csv('pdf_workers/students.csv'), 20)
+    generate_attendance_sheet(pd.read_csv('students.csv'), 20)

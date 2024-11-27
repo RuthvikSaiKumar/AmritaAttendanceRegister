@@ -114,6 +114,8 @@ class PDF(FPDF):
         iterations = 0
         try:
             iterations = len(extra_cols) // split_at
+            if (len(extra_cols) / split_at) > iterations:
+                iterations += 1
         except ZeroDivisionError:
             iterations = 1
 

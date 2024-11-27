@@ -103,12 +103,14 @@ class PDF(FPDF):
         iterations = 0
         try:
             iterations = len(extra_cols) // split_at
+            if (len(extra_cols) / split_at) > iterations:
+                iterations += 1
         except ZeroDivisionError:
             iterations = 1
 
         chunk_start = 0
 
-        for _ in range(iterations + 1):
+        for _ in range(iterations):
             if split_at == 0:
                 chunk_cols = extra_cols[chunk_start:]
                 chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
@@ -121,6 +123,9 @@ class PDF(FPDF):
             self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
 
             for idx, row in df.iterrows():
+
+                print(idx)
+
                 self.set_font('Arial', '', 10)
 
                 self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
@@ -179,9 +184,6 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
     data_frame['Reg. No.'] = students.iloc[:, 0]
     data_frame['Name of Student'] = students.iloc[:, 1]
 
-    data_frame['Reg. No.'] = students.iloc[:, 0]
-    data_frame['Name of Student'] = students.iloc[:, 1]
-
     pdf = PDF(orientation='L')
     pdf.set_auto_page_break(auto=True, margin=10)
     pdf.draw_table(data_frame, widths)
@@ -191,4 +193,4 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
 
 
 if __name__ == '__main__':
-    generate_attendance_sheet(pd.read_csv('./students.csv'), 20)
+    generate_attendance_sheet(pd.read_csv('./students.csv'), 60)

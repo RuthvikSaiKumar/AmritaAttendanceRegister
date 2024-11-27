@@ -1,11 +1,12 @@
+import os
+
+import pandas as pd
 from PySide6.QtCore import QDate, QSize
 from PySide6.QtGui import QIcon, Qt, QPixmap
 from PySide6.QtWidgets import QMainWindow, QScrollArea, QVBoxLayout, QPushButton, \
-    QHBoxLayout, QLabel, QMessageBox, QWidget, QDialog, QTableWidget, QComboBox, QSpinBox, QCheckBox, \
+    QHBoxLayout, QLabel, QWidget, QDialog, QTableWidget, QComboBox, QSpinBox, QCheckBox, \
     QTableWidgetItem, QFileDialog
 
-import os
-import pandas as pd
 import pdf_workers
 
 
@@ -29,9 +30,7 @@ class MainWindow(QMainWindow):
     attendance_panel: QWidget
     attendance_scroll_list: QScrollArea
     date_label: QLabel
-    settings_button: QPushButton
     github: QPushButton
-    switch_theme_button: QPushButton
     help_button: QPushButton
     hlayout: QHBoxLayout
     app_usage_list_label: QLabel
@@ -73,9 +72,7 @@ class MainWindow(QMainWindow):
         ###############################################################################################
 
         self.create_help_button()
-        self.create_switch_theme_button()
         self.create_github_link()
-        self.create_settings_button()
         self.create_date_display()
 
         left_layout = QHBoxLayout()
@@ -84,8 +81,6 @@ class MainWindow(QMainWindow):
 
         right_layout = QHBoxLayout()
         right_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
-        right_layout.addWidget(self.settings_button)
-        right_layout.addWidget(self.switch_theme_button)
         right_layout.addWidget(self.help_button)
         right_layout.addWidget(self.github)
 
@@ -110,7 +105,6 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("""
                 background-color: #021002;
         """)
-        # self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
 
     def create_title_bar(self):
         image = QLabel()
@@ -322,7 +316,7 @@ class MainWindow(QMainWindow):
         self.class_dropdown = QComboBox()
         self.class_dropdown.addItem("Theory")
         self.class_dropdown.addItem("Lab")
-        self.class_dropdown.addItem("Lab-integrated")
+        # self.class_dropdown.addItem("Lab-integrated")
         self.class_dropdown.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 18px;
@@ -346,8 +340,8 @@ class MainWindow(QMainWindow):
         requirements_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
         # 2 buttons - temporary attendance and full attendance
-        temp_attendance_button = QPushButton("Temporary Attendance")
-        temp_attendance_button.setStyleSheet("""
+        self.temp_attendance_button = QPushButton("Temporary Attendance")
+        self.temp_attendance_button.setStyleSheet("""
             QPushButton {
                 background-color: #021002;
                 color: #16DB65;
@@ -361,11 +355,11 @@ class MainWindow(QMainWindow):
                 font-weight: bold;
             }
         """)
-        temp_attendance_button.setMinimumSize(200, 40)
-        temp_attendance_button.setMaximumSize(200, 40)
+        self.temp_attendance_button.setMinimumSize(200, 40)
+        self.temp_attendance_button.setMaximumSize(200, 40)
 
-        attendance_button = QPushButton("Attendance")
-        attendance_button.setStyleSheet("""
+        self.attendance_button = QPushButton("Attendance")
+        self.attendance_button.setStyleSheet("""
             QPushButton {
                 background-color: #021002;
                 color: #16DB65;
@@ -379,11 +373,11 @@ class MainWindow(QMainWindow):
                 font-weight: bold;
             }
         """)
-        attendance_button.setMinimumSize(200, 40)
-        attendance_button.setMaximumSize(200, 40)
+        self.attendance_button.setMinimumSize(200, 40)
+        self.attendance_button.setMaximumSize(200, 40)
 
-        marks_button = QPushButton("Marks")
-        marks_button.setStyleSheet("""
+        self.marks_button = QPushButton("Marks")
+        self.marks_button.setStyleSheet("""
             QPushButton {
                 background-color: #021002;
                 color: #16DB65;
@@ -397,11 +391,11 @@ class MainWindow(QMainWindow):
                 font-weight: bold;
             }
         """)
-        marks_button.setMinimumSize(200, 40)
-        marks_button.setMaximumSize(200, 40)
+        self.marks_button.setMinimumSize(200, 40)
+        self.marks_button.setMaximumSize(200, 40)
 
-        attendance_marks_button = QPushButton("Attendance + Marks")
-        attendance_marks_button.setStyleSheet("""
+        self.attendance_marks_button = QPushButton("Attendance + Marks")
+        self.attendance_marks_button.setStyleSheet("""
             QPushButton {
                 background-color: #021002;
                 color: #16DB65;
@@ -415,19 +409,19 @@ class MainWindow(QMainWindow):
                 font-weight: bold;
             }
         """)
-        attendance_marks_button.setMinimumSize(200, 40)
-        attendance_marks_button.setMaximumSize(200, 40)
+        self.attendance_marks_button.setMinimumSize(200, 40)
+        self.attendance_marks_button.setMaximumSize(200, 40)
 
-        temp_attendance_button.clicked.connect(self.on_temp_attendance_button_clicked)
-        attendance_button.clicked.connect(self.on_attendance_button_clicked)
-        marks_button.clicked.connect(self.on_marks_button_clicked)
-        attendance_marks_button.clicked.connect(self.on_attendance_marks_button_clicked)
+        self.temp_attendance_button.clicked.connect(self.on_temp_attendance_button_clicked)
+        self.attendance_button.clicked.connect(self.on_attendance_button_clicked)
+        self.marks_button.clicked.connect(self.on_marks_button_clicked)
+        self.attendance_marks_button.clicked.connect(self.on_attendance_marks_button_clicked)
 
         # Add everything to the main layout
-        requirements_layout.addWidget(temp_attendance_button)
-        requirements_layout.addWidget(attendance_button)
-        requirements_layout.addWidget(marks_button)
-        requirements_layout.addWidget(attendance_marks_button)
+        requirements_layout.addWidget(self.temp_attendance_button)
+        requirements_layout.addWidget(self.attendance_button)
+        requirements_layout.addWidget(self.marks_button)
+        requirements_layout.addWidget(self.attendance_marks_button)
 
         #########################################################################
 
@@ -519,9 +513,9 @@ class MainWindow(QMainWindow):
         hlayout2.addStretch()
         hlayout2.addWidget(self.midsem_checkbox)
 
-        missed_midsem_label = QLabel("Missed Mid Semester")
-        missed_midsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        missed_midsem_label.setStyleSheet("""
+        self.missed_midsem_label = QLabel("Missed Mid Semester")
+        self.missed_midsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.missed_midsem_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
@@ -541,14 +535,14 @@ class MainWindow(QMainWindow):
         self.missed_midsem_checkbox.setEnabled(False)
         self.missed_midsem_checkbox.setChecked(True)
 
-        hlayout3 = QHBoxLayout()
-        hlayout3.addWidget(missed_midsem_label)
-        hlayout3.addStretch()
-        hlayout3.addWidget(self.missed_midsem_checkbox)
+        self.hlayout3 = QHBoxLayout()
+        self.hlayout3.addWidget(self.missed_midsem_label)
+        self.hlayout3.addStretch()
+        self.hlayout3.addWidget(self.missed_midsem_checkbox)
 
-        quiz_label = QLabel("Quiz")
-        quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        quiz_label.setStyleSheet("""
+        self.quiz_label = QLabel("Quiz")
+        self.quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.quiz_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
@@ -563,14 +557,25 @@ class MainWindow(QMainWindow):
             font-size: 16px;
         """)
 
-        hlayout4 = QHBoxLayout()
-        hlayout4.addWidget(quiz_label)
-        hlayout4.addStretch()
-        hlayout4.addWidget(self.quiz_spinbox)
+        self.experiments_spinbox = QSpinBox()
+        self.experiments_spinbox.setMinimum(0)
+        self.experiments_spinbox.setMaximum(8)
+        self.experiments_spinbox.setFixedWidth(70)
+        self.experiments_spinbox.setStyleSheet("""
+            font-family: Century Gothic;
+            font-size: 16px;
+        """)
+        self.experiments_spinbox.setVisible(False)
 
-        missed_quiz_label = QLabel("Missed Quiz")
-        missed_quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        missed_quiz_label.setStyleSheet("""
+        self.hlayout4 = QHBoxLayout()
+        self.hlayout4.addWidget(self.quiz_label)
+        self.hlayout4.addStretch()
+        self.hlayout4.addWidget(self.quiz_spinbox)
+        self.hlayout4.addWidget(self.experiments_spinbox)
+
+        self.missed_quiz_label = QLabel("Missed Quiz")
+        self.missed_quiz_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.missed_quiz_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
@@ -588,14 +593,14 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        hlayout5 = QHBoxLayout()
-        hlayout5.addWidget(missed_quiz_label)
-        hlayout5.addStretch()
-        hlayout5.addWidget(self.missed_quiz_checkbox)
+        self.hlayout5 = QHBoxLayout()
+        self.hlayout5.addWidget(self.missed_quiz_label)
+        self.hlayout5.addStretch()
+        self.hlayout5.addWidget(self.missed_quiz_checkbox)
 
-        assignments_label = QLabel("Assignments")
-        assignments_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        assignments_label.setStyleSheet("""
+        self.assignments_label = QLabel("Assignments")
+        self.assignments_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.assignments_label.setStyleSheet("""
             font-family: Century Gothic;
             font-size: 16px;
             color: #16DB65;
@@ -610,35 +615,10 @@ class MainWindow(QMainWindow):
             font-size: 16px;
         """)
 
-        hlayout6 = QHBoxLayout()
-        hlayout6.addWidget(assignments_label)
-        hlayout6.addStretch()
-        hlayout6.addWidget(self.assignments_spinbox)
-
-        # sessional_label = QLabel("Sessional")
-        # sessional_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        # sessional_label.setStyleSheet("""
-        #     font-family: Century Gothic;
-        #     font-size: 16px;
-        #     color: #16DB65;
-        # """)
-        #
-        # sessional_checkbox = QCheckBox()
-        # sessional_checkbox.setStyleSheet("""
-        #     QCheckBox::indicator {
-        #         width: 30px;
-        #         height: 30px;
-        #     }
-        #     QCheckBox {
-        #         font-family: Century Gothic;
-        #         font-size: 16px;
-        #     }
-        # """)
-        #
-        # hlayout6 = QHBoxLayout()
-        # hlayout6.addWidget(sessional_label)
-        # hlayout6.addStretch()
-        # hlayout6.addWidget(sessional_checkbox)
+        self.hlayout6 = QHBoxLayout()
+        self.hlayout6.addWidget(self.assignments_label)
+        self.hlayout6.addStretch()
+        self.hlayout6.addWidget(self.assignments_spinbox)
 
         endsem_label = QLabel("End Semester")
         endsem_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -657,10 +637,24 @@ class MainWindow(QMainWindow):
         self.endsem_dropdown.setMinimumSize(120, 30)
         self.endsem_dropdown.setMaximumSize(120, 30)
 
-        hlayout7 = QHBoxLayout()
-        hlayout7.addWidget(endsem_label)
-        hlayout7.addStretch()
-        hlayout7.addWidget(self.endsem_dropdown)
+        self.endsem_checkbox = QCheckBox()
+        self.endsem_checkbox.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 30px;
+                height: 30px;
+            }
+            QCheckBox {
+                font-family: Century Gothic;
+                font-size: 16px;
+            }
+        """)
+        self.endsem_checkbox.setVisible(False)
+
+        self.hlayout7 = QHBoxLayout()
+        self.hlayout7.addWidget(endsem_label)
+        self.hlayout7.addStretch()
+        self.hlayout7.addWidget(self.endsem_dropdown)
+        self.hlayout7.addWidget(self.endsem_checkbox)
 
         attendance_marks_layout = QVBoxLayout()
         attendance_marks_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -672,11 +666,11 @@ class MainWindow(QMainWindow):
         attendance_marks_layout.addWidget(marks_label)
         attendance_marks_layout.addWidget(line2)
         attendance_marks_layout.addLayout(hlayout2)
-        attendance_marks_layout.addLayout(hlayout3)
-        attendance_marks_layout.addLayout(hlayout4)
-        attendance_marks_layout.addLayout(hlayout5)
-        attendance_marks_layout.addLayout(hlayout6)
-        attendance_marks_layout.addLayout(hlayout7)
+        attendance_marks_layout.addLayout(self.hlayout3)
+        attendance_marks_layout.addLayout(self.hlayout4)
+        attendance_marks_layout.addLayout(self.hlayout5)
+        attendance_marks_layout.addLayout(self.hlayout6)
+        attendance_marks_layout.addLayout(self.hlayout7)
 
         self.right_panel = QWidget()
         self.right_panel.setMaximumWidth(500)
@@ -727,46 +721,6 @@ class MainWindow(QMainWindow):
 
         help_dialog.exec()
 
-    def create_switch_theme_button(self):
-        self.switch_theme_button = QPushButton()
-        self.switch_theme_button.setIcon(QIcon("assets/theme.png"))
-        self.switch_theme_button.setIconSize(QSize(20, 20))
-        self.switch_theme_button.setToolTip("Switch Theme")
-        self.switch_theme_button.setStyleSheet("""
-            background-color: #16DB65;
-            color: #021002;
-            font-family: Century Gothic;
-            font-size: 16px;
-            font-weight: bold;
-        """)
-        self.switch_theme_button.setMinimumSize(30, 30)
-        self.switch_theme_button.setMaximumSize(30, 30)
-
-        self.switch_theme_button.clicked.connect(self.on_switch_theme_button_clicked)
-
-    @staticmethod
-    def on_switch_theme_button_clicked():
-        # todo: switch between dark and light theme
-
-        notification = QMessageBox()
-        notification.setWindowTitle("Switch Theme")
-        notification.setText(
-            "Feature Under Development\n\n"
-            "This button will allow you to change the theme of the app."
-        )
-        notification.setStandardButtons(QMessageBox.StandardButton.Ok)
-        notification.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 15px;
-            color: #16DB65;
-        """)
-        notification.setWindowIcon(QIcon("assets/ReConnect Logo.png"))
-        notification.button(QMessageBox.StandardButton.Ok).setStyleSheet("""
-            background-color: #16DB65;
-            color: #021002;
-        """)
-        notification.exec()
-
     def create_github_link(self):
         self.github = QPushButton()
         self.github.setIcon(QIcon("assets/github.png"))
@@ -791,46 +745,6 @@ class MainWindow(QMainWindow):
         url = "https://github.com/RuthvikSaiKumar/AmritaAttendanceRegister"
         webbrowser.open(url)
 
-    def create_settings_button(self):
-        self.settings_button = QPushButton()
-        self.settings_button.setIcon(QIcon("assets/settings.png"))
-        self.settings_button.setIconSize(QSize(20, 20))
-        self.settings_button.setToolTip("Settings")
-        self.settings_button.setStyleSheet("""
-            background-color: #16DB65;
-            color: #021002;
-            border-radius: 10px;
-            font-family: Century Gothic;
-            font-size: 16px;
-            font-weight: bold;
-        """)
-        self.settings_button.setMinimumSize(30, 30)
-        self.settings_button.setMaximumSize(30, 30)
-
-        self.settings_button.clicked.connect(self.on_settings_button_clicked)
-
-    @staticmethod
-    def on_settings_button_clicked():
-        # todo: make this a popup
-        notification = QMessageBox()
-        notification.setWindowTitle("Settings")
-        notification.setText(
-            "Feature Under Development\n\n"
-            "This button will allow you to change the settings of the app."
-        )
-        notification.setStandardButtons(QMessageBox.StandardButton.Ok)
-        notification.setStyleSheet("""
-            font-family: Century Gothic;
-            font-size: 15px;
-            color: #16DB65;
-        """)
-        notification.setWindowIcon(QIcon("assets/ReConnect Logo.png"))
-        notification.button(QMessageBox.StandardButton.Ok).setStyleSheet("""
-            background-color: #16DB65;
-            color: #021002;
-        """)
-        notification.exec()
-
     def create_date_display(self):
         self.date_label = QLabel(QDate.currentDate().toString("dd MMM, yyyy - ddd"))
         self.date_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -845,7 +759,71 @@ class MainWindow(QMainWindow):
     #########################################################################################
 
     def on_class_dropdown_changed(self, index):
-        pass
+        if index == 0:
+
+            # change attendance spinner to 100
+            self.num_days_spinner.setMaximum(100)
+
+            if self.right_panel.layout().indexOf(self.hlayout3) == -1:
+                self.right_panel.layout().insertLayout(6, self.hlayout3)
+                self.missed_midsem_label.setVisible(True)
+                self.missed_midsem_checkbox.setVisible(True)
+
+            if self.experiments_spinbox.isVisible():
+                self.quiz_label.setText("Quiz")
+                self.quiz_spinbox.setVisible(True)
+                self.experiments_spinbox.setVisible(False)
+
+            if self.right_panel.layout().indexOf(self.hlayout5) == -1:
+                self.right_panel.layout().insertLayout(8, self.hlayout5)
+                self.missed_quiz_label.setVisible(True)
+                self.missed_quiz_checkbox.setVisible(True)
+
+            if self.right_panel.layout().indexOf(self.hlayout6) == -1:
+                self.assignments_label.setVisible(True)
+                self.assignments_spinbox.setVisible(True)
+
+            if self.endsem_checkbox.isVisible():
+                self.endsem_dropdown.setVisible(True)
+                self.endsem_checkbox.setVisible(False)
+
+            self.right_panel.layout().update()
+
+            # show attendance, temp attendance, marks buttons
+            self.temp_attendance_button.setVisible(True)
+            self.attendance_button.setVisible(True)
+            self.marks_button.setVisible(True)
+
+        if index == 1:
+
+            # change attendance spinner to 20
+            self.num_days_spinner.setMaximum(20)
+
+            self.right_panel.layout().removeItem(self.hlayout3)
+            self.missed_midsem_label.setVisible(False)
+            self.missed_midsem_checkbox.setVisible(False)
+
+            self.quiz_label.setText("Experiments")
+            self.quiz_spinbox.setVisible(False)
+            self.experiments_spinbox.setVisible(True)
+
+            self.right_panel.layout().removeItem(self.hlayout5)
+            self.missed_quiz_label.setVisible(False)
+            self.missed_quiz_checkbox.setVisible(False)
+
+            self.right_panel.layout().removeItem(self.hlayout6)
+            self.assignments_label.setVisible(False)
+            self.assignments_spinbox.setVisible(False)
+
+            self.endsem_dropdown.setVisible(False)
+            self.endsem_checkbox.setVisible(True)
+
+            self.right_panel.layout().update()
+
+            #         hide attendance, temp attendance, marks buttons
+            self.temp_attendance_button.setVisible(False)
+            self.attendance_button.setVisible(False)
+            self.marks_button.setVisible(False)
 
     def on_midsem_checkbox_changed(self, state):
         self.missed_midsem_checkbox.setChecked(state == Qt.CheckState.Checked)
@@ -951,6 +929,7 @@ class MainWindow(QMainWindow):
         pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, file_name)
 
     def on_attendance_marks_button_clicked(self):
+        # sourcery skip: extract-duplicate-method, extract-method
         file_name, _ = QFileDialog.getSaveFileName(self, "Save PDF File", "", "PDF Files (*.pdf)")
 
         if not file_name:
@@ -958,25 +937,57 @@ class MainWindow(QMainWindow):
 
         pdf_workers.attendance_sheet_pdf.generate_attendance_sheet(self.create_data_frame(),
                                                                    self.num_days_spinner.value(), 'a.pdf')
+        # if drop down is theory, generate marks sheet
+        if self.class_dropdown.currentIndex() == 0:
+            requirements_dict = {
+                'Roll No.': (1, 10),
+                'Reg. No.': (1, 40),
+                'Name of Student': (1, 60),
+                'M.S.': (self.midsem_checkbox.isChecked(), 10),
+                'Missed M.S.': (self.missed_midsem_checkbox.isChecked(), 20),
+                'Q': (self.quiz_spinbox.value(), 10),
+                'Missed Q': (self.missed_quiz_checkbox.isChecked(), 15),
+                'A': (self.assignments_spinbox.value(), 10),
+                'Sessional': (1, 15),
+                f'E.M. ({self.endsem_dropdown.currentText()})': (1, 20),
+                'Total': (1, 15),
+                'Grade': (1, 15)
+            }
 
-        requirements_dict = {
-            'Roll No.': (1, 10),
-            'Reg. No.': (1, 40),
-            'Name of Student': (1, 60),
-            'M.S.': (self.midsem_checkbox.isChecked(), 10),
-            'Missed M.S.': (self.missed_midsem_checkbox.isChecked(), 20),
-            'Q': (self.quiz_spinbox.value(), 10),
-            'Missed Q': (self.missed_quiz_checkbox.isChecked(), 15),
-            'A': (self.assignments_spinbox.value(), 10),
-            'Sessional': (1, 15),
-            f'E.M. ({self.endsem_dropdown.currentText()})': (1, 20),
-            'Total': (1, 15),
-            'Grade': (1, 15)
-        }
+            pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, 'm.pdf')
 
-        pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, 'm.pdf')
+            pdf_workers.merger.merge_pdfs('a.pdf', 'm.pdf', file_name)
 
-        pdf_workers.merger.merge_pdfs('a.pdf', 'm.pdf', file_name)
+            os.remove('a.pdf')
+            os.remove('m.pdf')
 
-        os.remove('a.pdf')
-        os.remove('m.pdf')
+        elif self.class_dropdown.currentIndex() == 1:
+            # lab attendance
+            pdf_workers.lab_attendance.generate_attendance_sheet(self.create_data_frame(),
+                                                                 self.num_days_spinner.value(), 'a.pdf')
+
+            # lab marks
+            requirements_dict = {
+                'Roll No.': (1, 10),
+                'Reg. No.': (1, 38),
+                'Name of Student': (1, 60),
+            }
+
+            number_of_experiments = self.experiments_spinbox.value()
+
+            for k in range(1, number_of_experiments + 1):
+                requirements_dict[str(k)] = (1, 28)
+
+            requirements_dict['Mid Sem'] = (self.midsem_checkbox.isChecked(), 28)
+            requirements_dict['End Sem'] = (self.endsem_checkbox.isChecked(), 28)
+            requirements_dict['Total'] = (1, 14)
+            requirements_dict['Grade'] = (1, 14)
+
+            pdf_workers.marks_sheet_pdf.generate_marks_sheet(self.create_data_frame(), requirements_dict, 'm.pdf')
+
+            pdf_workers.merger.merge_pdfs('a.pdf', 'm.pdf', file_name)
+
+            os.remove('a.pdf')
+            os.remove('m.pdf')
+
+

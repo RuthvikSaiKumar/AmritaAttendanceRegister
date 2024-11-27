@@ -1,5 +1,3 @@
-import contextlib
-
 import pandas as pd
 from fpdf import FPDF
 
@@ -31,10 +29,10 @@ class PDF(FPDF):
 
         self.cell(15, self.cell_h, 'Experiment:', border=1)
 
-        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
+        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
 
-        if col_widths[-2] == 10:
+        if col_widths[-2] == 14:
             self.cell(col_widths[-2], self.cell_h * 3, df[-2], border=1)
             self.cell(col_widths[-1], self.cell_h * 3, df[-1], border=1)
 
@@ -50,7 +48,7 @@ class PDF(FPDF):
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Date:', border=1)
 
-        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
+        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
 
         self.ln()
@@ -63,7 +61,7 @@ class PDF(FPDF):
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Max Marks:', border=1)
 
-        for i in range(3, len(df) if col_widths[-2] != 10 else len(df) - 2):
+        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
             self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
 
         self.ln()
@@ -74,7 +72,7 @@ class PDF(FPDF):
         self.cell(15, self.cell_h, 'Division:', border=1)
         self.set_font('Arial', 'B', 5)
         for i in range(3, len(df)):
-            if col_widths[i] != 10:
+            if col_widths[i] != 14:
                 for j in range(4):
                     if j % 4 == 3:
                         self.cell(col_widths[i] / 4, self.cell_h, 'Total' if df[i] not in ['Test', 'End Sem'] else '',
@@ -94,7 +92,7 @@ class PDF(FPDF):
         self.cell(sum(chunk_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
 
         for _, width in zip(chunk_cols, chunk_col_widths[3:]):
-            if width != 10:
+            if width != 14:
                 for _ in range(4):
                     self.cell(width / 4, self.cell_h, '', border=1)
             else:
@@ -140,10 +138,12 @@ class PDF(FPDF):
 
         # noinspection PyUnusedLocal
         iterations = 0
-        with contextlib.suppress(ZeroDivisionError):
+        try:
             iterations = len(extra_cols) // split_at
-        if iterations == 0:
-            iterations += 1
+            if (len(extra_cols) / split_at) > iterations:
+                iterations += 1
+        except ZeroDivisionError:
+            iterations = 1
 
         chunk_start = 0
 
@@ -173,7 +173,7 @@ class PDF(FPDF):
                 self.cell(chunk_col_widths[2], self.cell_h, name, border=1, align='L')
 
                 for col, width in zip(chunk_cols, chunk_col_widths[3:]):
-                    if width != 10:
+                    if width != 14:
                         for _ in range(4):
                             self.cell(width / 4, self.cell_h, str(row[col]), border=1, align='C')
                     else:
@@ -191,7 +191,7 @@ class PDF(FPDF):
                 for j in range(len(fixed_cols)):
                     self.cell(chunk_col_widths[j], self.cell_h, '', border=1)
                 for j in range(len(fixed_cols), len(fixed_cols) + len(chunk_cols)):
-                    if chunk_col_widths[j] != 10:
+                    if chunk_col_widths[j] != 14:
                         for _ in range(4):
                             self.cell(chunk_col_widths[j] / 4, self.cell_h, '', border=1)
                     else:
@@ -237,14 +237,14 @@ if __name__ == '__main__':
         'Name of Student': (1, 60),
     }
 
-    number_of_experiments = 2
+    number_of_experiments = 8
 
     for k in range(1, number_of_experiments + 1):
         requirements_dict[str(k)] = (1, 28)
 
-    requirements_dict['Test'] = (1, 28)
+    requirements_dict['Mid Sem'] = (1, 28)
     requirements_dict['End Sem'] = (1, 28)
-    requirements_dict['Total'] = (1, 10)
-    requirements_dict['Grade'] = (1, 10)
+    requirements_dict['Total'] = (1, 14)
+    requirements_dict['Grade'] = (1, 14)
 
-    generate_marks_sheet(pd.read_csv('pdf_workers/students.csv'), requirements_dict)
+    generate_marks_sheet(pd.read_csv('students.csv'), requirements_dict)

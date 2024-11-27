@@ -1,1 +1,17 @@
-I'm here to help ;)
+Welcome to Register Generator:
+
+To get started, please Select the Class type
+
+Start Filling in the details of the student, or you can even load it from csv file.
+
+Choose the number of days for if you are creating an attendance sheet
+Choose the evaluations that you will include if you are creating a marks sheet
+
+Out of the 4 options:
+
+Temporary Attendance
+Attendance
+Marks
+Attendance + Marks
+
+Select your preferred option to create the table
