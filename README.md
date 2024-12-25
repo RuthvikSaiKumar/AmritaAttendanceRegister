@@ -18,6 +18,10 @@ This software generates the pdf of the attendance sheet based on the requirement
 ### Installing
 
 After downloading the source code, pip install the dependencies.
+Using pip requirements command we can install all the dependencies in one shot.
+```
+pip install -r requirements.txt
+```
 
 ### Executing program
 
