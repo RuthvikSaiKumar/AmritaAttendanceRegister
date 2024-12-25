@@ -1,0 +1,4 @@
+fpdf
+pypdf2
+pandas
+PySide6

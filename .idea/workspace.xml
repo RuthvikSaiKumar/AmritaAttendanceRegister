@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="some more fixes">
-      <change beforePath="$PROJECT_DIR$/.idea/AmritaAttendanceRegister.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AmritaAttendanceRegister.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/help.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/help.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/lab_attendance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab_marks.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/lab_marks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_workers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +89,29 @@
       <recent name="D:\PycharmProjects\AmritaAttendanceRegister\pdf_workers" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.lab_marks">
+    <configuration name="lab_marks" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AmritaAttendanceRegister" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pdf_workers" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pdf_workers/lab_marks.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AmritaAttendanceRegister" />
       <option name="ENV_FILES" value="" />
@@ -120,6 +134,11 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.lab_marks" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -226,7 +245,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732015397161</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="some more fixes">
+      <option name="closed" value="true" />
+      <created>1732689165686</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1732689165686</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="UnknownFeatures">
