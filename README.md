@@ -29,7 +29,7 @@ Simply execute the `main.py` file.
 
 ## Authors
 
-Ruthvik Sai Kumar. L
+Ruthvik Sai Kumar. L <br>
 Nandhith Karthikeyan
 
 ## Version History
