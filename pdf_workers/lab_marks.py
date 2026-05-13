@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 from fpdf import FPDF
 
@@ -9,14 +10,22 @@ class PDF(FPDF):
         self.set_font('Arial', 'B', 8)
         self.cell(0, 8, 'MARKS SHEET', border=0, ln=1, align='C')
 
-    def table_header(self, df, col_widths):
-        # sourcery skip: extract-duplicate-method
+    def _fit_text(self, text: str, max_width: float) -> str:
+        if self.get_string_width(text) <= max_width:
+            return text
+        ellipsis_w = self.get_string_width('...')
+        lo, hi = 0, len(text)
+        while lo < hi - 1:
+            mid = (lo + hi) // 2
+            if self.get_string_width(text[:mid]) + ellipsis_w <= max_width:
+                lo = mid
+            else:
+                hi = mid
+        return text[:lo] + '...'
 
+    def table_header(self, df, col_widths, is_last_chunk, tail_count):
         self.set_font('Arial', '', 7)
 
-        # top row
-
-        # roll no.
         x = self.get_x()
         y = self.get_y()
 
@@ -29,215 +38,239 @@ class PDF(FPDF):
 
         self.cell(15, self.cell_h, 'Experiment:', border=1)
 
-        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
+        exp_cols_count = len(df) - 3 - (tail_count if is_last_chunk else 0)
+
+        for i in range(3, 3 + exp_cols_count):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
 
-        if col_widths[-2] == 14:
-            self.cell(col_widths[-2], self.cell_h * 3, df[-2], border=1)
-            self.cell(col_widths[-1], self.cell_h * 3, df[-1], border=1)
-
+        if is_last_chunk:
+            for i in range(3 + exp_cols_count, len(df)):
+                self.cell(col_widths[i], self.cell_h * 3, df[i], border=1, align='C')
             self.set_y(y + self.cell_h)
 
-        # self.ln()
-
         # middle row
-
-        # empty for the first three columns
         self.cell(col_widths[0], self.cell_h, '', border=0)
         self.cell(col_widths[1], self.cell_h, '', border=0)
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Date:', border=1)
-
-        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
-            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
-
+        for i in range(3, 3 + exp_cols_count):
+            self.cell(col_widths[i], self.cell_h, '', border=1)
         self.ln()
 
         # bottom row
-
-        # empty for the first three columns
         self.cell(col_widths[0], self.cell_h, '', border=0)
         self.cell(col_widths[1], self.cell_h, '', border=0)
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Max Marks:', border=1)
-
-        for i in range(3, len(df) if col_widths[-2] != 14 else len(df) - 2):
-            self.cell(col_widths[i], self.cell_h, '', border=1, align='L')
-
+        for i in range(3, 3 + exp_cols_count):
+            self.cell(col_widths[i], self.cell_h, '', border=1)
         self.ln()
 
+        # division row
         self.cell(col_widths[0], self.cell_h, '', border=0)
         self.cell(col_widths[1], self.cell_h, '', border=0)
         self.cell(col_widths[2] - 15, self.cell_h, '', border=0)
         self.cell(15, self.cell_h, 'Division:', border=1)
         self.set_font('Arial', 'B', 5)
         for i in range(3, len(df)):
-            if col_widths[i] != 14:
+            w = col_widths[i]
+            if i < 3 + exp_cols_count:
                 for j in range(4):
-                    if j % 4 == 3:
-                        self.cell(col_widths[i] / 4, self.cell_h, 'Total' if df[i] not in ['Test', 'End Sem'] else '',
-                                  border=1, align='L')
-                    else:
-                        self.cell(col_widths[i] / 4, self.cell_h, '', border=1, align='L')
+                    label = 'Total' if j == 3 else ''
+                    self.cell(w / 4, self.cell_h, label, border=1, align='L')
             else:
-                self.cell(col_widths[i], self.cell_h, '', border=1)
-
+                self.cell(w, self.cell_h, '', border=1)
         self.set_font('Arial', 'B', 10)
         self.ln()
 
-    def table_footer(self, chunk_cols, chunk_col_widths):
-        """ Creates the footer with the 'Intls. of staff:' text merging the first three columns """
+    def table_footer(self, all_display_cols, chunk_col_widths, exp_cols_count):
         self.set_font('Arial', 'B', 10)
-
         self.cell(sum(chunk_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
-
-        for _, width in zip(chunk_cols, chunk_col_widths[3:]):
-            if width != 14:
+        for i, (col, width) in enumerate(zip(all_display_cols[3:], chunk_col_widths[3:])):
+            if i < exp_cols_count:
                 for _ in range(4):
                     self.cell(width / 4, self.cell_h, '', border=1)
             else:
                 self.cell(width, self.cell_h, '', border=1)
         self.ln()
 
-    @staticmethod
-    def find_max_index(nums, threshold):
-        """
-        Find the maximum index x such that the sum of values from 0 to x is less than the given threshold.
+    def _compute_chunks(self, exp_cols, exp_col_widths, fixed_col_widths, tail_cols, tail_col_widths):
+        page_w = self.w - self.l_margin - self.r_margin
+        fixed_w = sum(fixed_col_widths)
+        tail_w = sum(tail_col_widths)
+        available = page_w - fixed_w
 
-        Args:
-            nums (list): A list of numbers.
-            threshold (int): The threshold value.
+        if not exp_cols:
+            return [([], list(fixed_col_widths) + list(tail_col_widths), True)]
 
-        Returns:
-            int: The maximum index x.
-        """
-        total_sum = 0
-        max_index = -1
+        total_natural_w = sum(exp_col_widths)
 
-        for i, num in enumerate(nums):
-            total_sum += num
-            if total_sum < threshold:
-                max_index = i
+        # Single page: everything fits with tail
+        if total_natural_w + tail_w <= available:
+            scale = (available - tail_w) / total_natural_w
+            scaled = [w * scale for w in exp_col_widths]
+            return [(
+                exp_cols,
+                list(fixed_col_widths) + scaled + list(tail_col_widths),
+                True
+            )]
+
+        # Multi-page
+        min_exp_w = 28
+        cols_per_full_page = max(1, int(available / min_exp_w))
+        cols_per_last_page = max(1, int((available - tail_w) / min_exp_w))
+
+        total_cols = len(exp_cols)
+
+        if total_cols <= cols_per_last_page:
+            num_chunks = 1
+        else:
+            remaining = total_cols - cols_per_last_page
+            num_chunks = 1 + math.ceil(remaining / cols_per_full_page)
+
+        if num_chunks == 1:
+            day_w = (available - tail_w) / total_cols
+            return [(
+                exp_cols,
+                list(fixed_col_widths) + [day_w] * total_cols + list(tail_col_widths),
+                True
+            )]
+
+        # First pass: group cols evenly across chunks
+        cols_in_full = total_cols - cols_per_last_page
+        base = cols_in_full // (num_chunks - 1)
+        remainder = cols_in_full % (num_chunks - 1)
+        start = 0
+        raw_chunks = []
+
+        for i in range(num_chunks - 1):
+            count = base + (1 if i < remainder else 0)
+            raw_chunks.append(('full', exp_cols[start:start + count]))
+            start += count
+
+        raw_chunks.append(('last', exp_cols[start:]))
+
+        # Second pass: uniform width across all full chunks based on the largest
+        max_day_count = max(len(c) for t, c in raw_chunks if t == 'full')
+        full_day_w = available / max_day_count
+        last_day_w = (available - tail_w) / len(raw_chunks[-1][1]) if raw_chunks[-1][1] else 0
+
+        chunks = []
+        for chunk_type, c_cols in raw_chunks:
+            if chunk_type == 'full':
+                chunks.append((c_cols, list(fixed_col_widths) + [full_day_w] * len(c_cols), False))
             else:
-                break
+                last_widths = list(fixed_col_widths) + [last_day_w] * len(c_cols) + list(tail_col_widths)
+                chunks.append((c_cols, last_widths, True))
 
-        return max_index
+        return chunks
 
-    def draw_table(self, df, col_widths):  # sourcery skip: low-code-quality, use-itertools-product
-
+    def draw_table(self, df, col_widths, tail_count=4):
         fixed_cols = list(df.columns[:3])
-        extra_cols = list(df.columns[3:])
-
+        exp_cols = list(df.columns[3:-tail_count])
+        tail_cols = list(df.columns[-tail_count:])
         fixed_col_widths = col_widths[:3]
-        extra_col_widths = col_widths[3:]
+        tail_col_widths = col_widths[-tail_count:]
+        exp_col_widths = col_widths[3:-tail_count]
 
-        split_at = 0
-        if sum(col_widths) + self.l_margin + self.r_margin > self.w:
-            split_at = self.find_max_index(extra_col_widths,
-                                           self.w - self.l_margin - self.r_margin - sum(col_widths[:3])) + 1
+        chunks = self._compute_chunks(exp_cols, exp_col_widths, fixed_col_widths, tail_cols, tail_col_widths)
 
-        # noinspection PyUnusedLocal
-        iterations = 0
-        try:
-            iterations = len(extra_cols) // split_at
-            if (len(extra_cols) / split_at) > iterations:
-                iterations += 1
-        except ZeroDivisionError:
-            iterations = 1
+        # Cross-chunk uniform width: all full chunks use the same day_w
+        # based on the chunk with the most experiment columns
+        full_chunks = [(c, w, l) for c, w, l in chunks if not l]
+        if full_chunks:
+            max_exp_count = max(len(c) for c, w, l in full_chunks)
+            page_w = self.w - self.l_margin - self.r_margin
+            available = page_w - sum(fixed_col_widths)
+            uniform_day_w = available / max_exp_count
+            rebuilt = []
+            for c_cols, c_widths, is_last in chunks:
+                if not is_last:
+                    new_widths = list(fixed_col_widths) + [uniform_day_w] * len(c_cols)
+                    rebuilt.append((c_cols, new_widths, False))
+                else:
+                    rebuilt.append((c_cols, c_widths, True))
+            chunks = rebuilt
 
-        chunk_start = 0
+        bottom_limit = self.h - self.b_margin - (self.cell_h * 2)
 
-        for _ in range(iterations):
-            if split_at == 0:
-                chunk_cols = extra_cols[chunk_start:]
-                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
-            else:
-                chunk_cols = extra_cols[chunk_start:chunk_start + split_at]
-                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:chunk_start + split_at]
+        for chunk_exp_cols, chunk_col_widths, is_last in chunks:
+            all_cols = fixed_cols + chunk_exp_cols + (tail_cols if is_last else [])
+            exp_cols_count = len(chunk_exp_cols)
 
             self.add_page()
+            self.table_header(all_cols, chunk_col_widths, is_last, tail_count)
 
-            self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
-            y = self.get_y()
-            self.set_xy(0 + col_widths[0], y)
+            self.set_font('Arial', '', 10)
+
             for idx, row in df.iterrows():
-                self.set_font('Arial', '', 10)
-
                 self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
-                self.cell(chunk_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
-                # check if the name is too long (longer than the width of the cell) and add ellipsis
-                name = str(row['Name of Student'])
-                if self.get_string_width(name) > chunk_col_widths[2]:
-                    ratio = chunk_col_widths[2] / self.get_string_width(name)
-                    name = name[:int(len(name) * ratio) - 3] + '...'
+
+                reg = self._fit_text(str(row['Reg. No.']), chunk_col_widths[1] - 2)
+                self.cell(chunk_col_widths[1], self.cell_h, reg, border=1, align='C')
+
+                name = self._fit_text(str(row['Name of Student']), chunk_col_widths[2] - 2)
                 self.cell(chunk_col_widths[2], self.cell_h, name, border=1, align='L')
 
-                for col, width in zip(chunk_cols, chunk_col_widths[3:]):
-                    if width != 14:
+                for i, (col, width) in enumerate(zip(all_cols[3:], chunk_col_widths[3:])):
+                    if i < exp_cols_count:
                         for _ in range(4):
                             self.cell(width / 4, self.cell_h, str(row[col]), border=1, align='C')
                     else:
                         self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
                 self.ln()
 
-                if self.get_y() > 180:
-                    self.table_footer(chunk_cols, chunk_col_widths)
+                if self.get_y() > bottom_limit and idx < len(df) - 1:
+                    self.table_footer(all_cols, chunk_col_widths, exp_cols_count)
                     self.add_page()
-                    self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
+                    self.table_header(all_cols, chunk_col_widths, is_last, tail_count)
+                    self.set_font('Arial', '', 10)
 
-            # keep adding empty rows to fill the page
-            while self.get_y() < 180:
-
-                for j in range(len(fixed_cols)):
-                    self.cell(chunk_col_widths[j], self.cell_h, '', border=1)
-                for j in range(len(fixed_cols), len(fixed_cols) + len(chunk_cols)):
-                    if chunk_col_widths[j] != 14:
+            while self.get_y() + self.cell_h <= bottom_limit:
+                for j, col in enumerate(all_cols):
+                    w = chunk_col_widths[j]
+                    if j >= 3 and j < 3 + exp_cols_count:
                         for _ in range(4):
-                            self.cell(chunk_col_widths[j] / 4, self.cell_h, '', border=1)
+                            self.cell(w / 4, self.cell_h, '', border=1)
                     else:
-                        self.cell(chunk_col_widths[j], self.cell_h, '', border=1)
+                        self.cell(w, self.cell_h, '', border=1)
                 self.ln()
 
-            self.table_footer(chunk_cols, chunk_col_widths)
-
-            chunk_start += split_at
+            self.table_footer(all_cols, chunk_col_widths, exp_cols_count)
 
 
 def generate_marks_sheet(students: pd.DataFrame, requirements: dict, filename='lab_marks_sheet.pdf'):
     num_students = len(students)
-
     data = {}
     widths = []
 
-    for name, value in requirements.items():
-        for count in range(value[0]):
-            data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
-            widths.append(value[1])
+    for name, (count, width) in requirements.items():
+        for k in range(count):
+            col_name = name if count == 1 else f'{name} {k + 1}'
+            data[col_name] = [''] * num_students
+            widths.append(width)
 
     data_frame = pd.DataFrame(data)
-
     data_frame['Roll No.'] = data_frame.index + 1
-    data_frame['Reg. No.'] = students.iloc[:, 0]
-    data_frame['Name of Student'] = students.iloc[:, 1]
+    data_frame['Reg. No.'] = students.iloc[:, 0].values
+    data_frame['Name of Student'] = students.iloc[:, 1].values
 
     pdf = PDF(orientation='L')
-    pdf.set_auto_page_break(auto=True, margin=10)
-    pdf.draw_table(data_frame, widths)
+    pdf.set_auto_page_break(auto=True, margin=20)
+    pdf.draw_table(data_frame, widths, tail_count=4)
     pdf.output(filename)
 
-    print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+    print("Lab marks sheet saved successfully.")
 
 
 if __name__ == '__main__':
-
-    # format (number of columns, width)
     requirements_dict = {
         'Roll No.': (1, 10),
         'Reg. No.': (1, 38),
         'Name of Student': (1, 60),
     }
 
-    number_of_experiments = 8
+    number_of_experiments = 12
 
     for k in range(1, number_of_experiments + 1):
         requirements_dict[str(k)] = (1, 28)

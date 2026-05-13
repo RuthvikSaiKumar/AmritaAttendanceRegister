@@ -1,17 +1,4 @@
-Welcome to Register Generator:
-
-To get started, please Select the Class type
-
-Start Filling in the details of the student, or you can even load it from csv file.
-
-Choose the number of days for if you are creating an attendance sheet
-Choose the evaluations that you will include if you are creating a marks sheet
-
-Out of the 4 options:
-
-Temporary Attendance
-Attendance
-Marks
-Attendance + Marks
-
-Select your preferred option to create the table
+1. Setup|Select your Class Type (Theory or Lab) from the sidebar. Lab mode automatically switches 'Quizzes' to 'Experiments' and adjusts the End-Sem options.
+2. Student Data|Enter Registration Numbers and Names manually in the table, or use 'Load CSV' to import an existing roster. You can add or remove rows as needed.
+3. Configuration|Use the right panel to set the number of classes for attendance. Toggle specific evaluation components like Mid-Sem, Quizzes, or Assignments for your Marks sheet.
+4. Generation|Choose 'Temp Attendance' for a blank 20-day sheet, 'Attendance' for a custom-dated sheet, or 'Marks' for a grading sheet. 'Attendance + Marks' merges both into one PDF.

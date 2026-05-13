@@ -11,10 +11,8 @@ class PDF(FPDF):
                   border=0, ln=1, align='L')
 
     def table_header(self, df, col_widths):
-
         self.set_font('Arial', 'B', 10)
 
-        # roll no.
         x = self.get_x()
         y = self.get_y()
 
@@ -22,139 +20,126 @@ class PDF(FPDF):
         self.multi_cell(col_widths[0], self.cell_h, df[0], border=1, align='C')
         self.set_xy(x + col_widths[0], y)
 
-        # reg no. and name
         for i in range(1, 3):
             self.cell(col_widths[i], self.cell_h * 2, df[i], border=1, align='C')
 
-        # days (chunk)
         for i in range(3, len(df)):
             self.cell(col_widths[i], self.cell_h, '', border=1)
 
         self.ln()
 
-        # empty for the first three columns
         for i in range(3):
             self.cell(col_widths[i], self.cell_h, '', border=0)
 
-        # days (chunk)
         for i in range(3, len(df)):
             self.cell(col_widths[i], self.cell_h, df[i], border=1, align='C')
 
         self.ln()
 
     def table_footer(self, chunk_cols, chunk_col_widths):
-        """ Creates the footer with the 'Intls. of staff:' text merging the first three columns """
         self.set_font('Arial', 'B', 10)
-
         self.cell(sum(chunk_col_widths[:3]), self.cell_h, 'Intls. of staff:', border=1, align='L')
-
         for _, width in zip(chunk_cols, chunk_col_widths[3:]):
             self.cell(width, self.cell_h, '', border=1)
         self.ln()
 
-    @staticmethod
-    def find_max_index(nums, threshold):
-        """
-        Find the maximum index x such that the sum of values from 0 to x is less than the given threshold.
-
-        Args:
-            nums (list): A list of numbers.
-            threshold (int): The threshold value.
-
-        Returns:
-            int: The maximum index x.
-        """
-        total_sum = 0
-        max_index = -1
-
-        for i, num in enumerate(nums):
-            total_sum += num
-            if total_sum < threshold:
-                max_index = i
+    def _fit_text(self, text: str, max_width: float) -> str:
+        """Truncate text with '...' so it fits within max_width at the current font size."""
+        if self.get_string_width(text) <= max_width:
+            return text
+        ellipsis_w = self.get_string_width('...')
+        lo, hi = 0, len(text)
+        while lo < hi - 1:
+            mid = (lo + hi) // 2
+            if self.get_string_width(text[:mid]) + ellipsis_w <= max_width:
+                lo = mid
             else:
-                break
+                hi = mid
+        return text[:lo] + '...'
 
-        return max_index
+    def _compute_chunks(self, extra_cols, extra_col_widths, fixed_col_widths):
+        page_w = self.w - self.l_margin - self.r_margin
+        fixed_w = sum(fixed_col_widths)
+        available = page_w - fixed_w
 
-    def draw_table(self, df, col_widths):  # sourcery skip: low-code-quality
-        """
-        Draws a table in a PDF document with column splitting and repeating headers in landscape mode.
+        if not extra_cols:
+            return [([], list(fixed_col_widths))]
 
-        Args:
-            df: A pandas DataFrame containing the data to be displayed in the table.
-            col_widths: A list of integers representing the widths of each column in the table.
+        total_cols = len(extra_cols)
 
-        Returns:
-            None
-        """
+        # Figure out how many columns fit per page using a minimum readable width
+        min_col_w = 8  # mm, same as original
+        cols_per_page = max(1, int(available / min_col_w))
 
+        # How many pages do we need?
+        import math
+        num_chunks = math.ceil(total_cols / cols_per_page)
+
+        # Distribute columns as evenly as possible across all chunks
+        base_count = total_cols // num_chunks
+        remainder = total_cols % num_chunks
+
+        chunks = []
+        start = 0
+        for i in range(num_chunks):
+            # First `remainder` chunks get one extra column
+            count = base_count + (1 if i < remainder else 0)
+            c_cols = extra_cols[start:start + count]
+            # Each chunk fills the full available width
+            day_w = available / len(c_cols)
+            chunks.append((c_cols, list(fixed_col_widths) + [day_w] * len(c_cols)))
+            start += count
+
+        return chunks
+
+    def draw_table(self, df, col_widths):
         fixed_cols = list(df.columns[:3])
         extra_cols = list(df.columns[3:])
-
         fixed_col_widths = col_widths[:3]
         extra_col_widths = col_widths[3:]
 
-        split_at = 0
-        if sum(col_widths) + self.l_margin + self.r_margin > self.w:
-            split_at = self.find_max_index(extra_col_widths,
-                                           self.w - self.l_margin - self.r_margin - sum(col_widths[:3])) + 1
+        chunks = self._compute_chunks(extra_cols, extra_col_widths, fixed_col_widths)
 
-        # noinspection PyUnusedLocal
-        iterations = 0
-        try:
-            iterations = len(extra_cols) // split_at
-            if (len(extra_cols) / split_at) > iterations:
-                iterations += 1
-        except ZeroDivisionError:
-            iterations = 1
+        # Bottom limit: leave room for footer row
+        bottom_limit = self.h - self.b_margin - (self.cell_h * 2)
 
-        chunk_start = 0
-
-        for _ in range(iterations):
-            if split_at == 0:
-                chunk_cols = extra_cols[chunk_start:]
-                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:]
-            else:
-                chunk_cols = extra_cols[chunk_start:chunk_start + split_at]
-                chunk_col_widths = fixed_col_widths + extra_col_widths[chunk_start:chunk_start + split_at]
+        for chunk_cols, chunk_col_widths in chunks:
+            all_cols = fixed_cols + chunk_cols
 
             self.add_page()
+            self.table_header(all_cols, chunk_col_widths)
 
-            self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
+            self.set_font('Arial', '', 10)
 
             for idx, row in df.iterrows():
+                self.cell(chunk_col_widths[0], self.cell_h,
+                          str(row['Roll No.']), border=1, align='C')
 
-                print(idx)
+                reg = self._fit_text(str(row['Reg. No.']), chunk_col_widths[1] - 2)
+                self.cell(chunk_col_widths[1], self.cell_h, reg, border=1, align='C')
 
-                self.set_font('Arial', '', 10)
-
-                self.cell(chunk_col_widths[0], self.cell_h, str(row['Roll No.']), border=1, align='C')
-                self.cell(chunk_col_widths[1], self.cell_h, str(row['Reg. No.']), border=1, align='C')
-                # check if the name is too long (longer than the width of the cell) and add ellipsis
-                name = str(row['Name of Student'])
-                if self.get_string_width(name) > chunk_col_widths[2]:
-                    ratio = chunk_col_widths[2] / self.get_string_width(name)
-                    name = name[:int(len(name) * ratio) - 3] + '...'
+                name = self._fit_text(str(row['Name of Student']), chunk_col_widths[2] - 2)
                 self.cell(chunk_col_widths[2], self.cell_h, name, border=1, align='L')
 
                 for col, width in zip(chunk_cols, chunk_col_widths[3:]):
                     self.cell(width, self.cell_h, str(row[col]), border=1, align='C')
+
                 self.ln()
 
-                if self.get_y() > 180 and idx < len(df) - 1:
+                # Mid-table page break
+                if self.get_y() > bottom_limit and idx < len(df) - 1:
                     self.table_footer(chunk_cols, chunk_col_widths)
                     self.add_page()
-                    self.table_header(fixed_cols + chunk_cols, chunk_col_widths)
+                    self.table_header(all_cols, chunk_col_widths)
+                    self.set_font('Arial', '', 10)
 
-            # keep adding empty rows to fill the page
-            while self.get_y() < 180:
-                for i in range(len(fixed_cols) + len(chunk_cols)):
+            # Pad remaining space with empty rows
+            while self.get_y() + self.cell_h <= bottom_limit:
+                for i in range(len(all_cols)):
                     self.cell(chunk_col_widths[i], self.cell_h, '', border=1)
                 self.ln()
 
             self.table_footer(chunk_cols, chunk_col_widths)
-
-            chunk_start += split_at
 
 
 def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='attendance.pdf'):
@@ -168,28 +153,26 @@ def generate_attendance_sheet(students: pd.DataFrame, days: int, filename='atten
         requirements[str(day)] = (1, 8)
 
     num_students = len(students)
-
     data = {}
     widths = []
 
-    for name, value in requirements.items():
-        for count in range(value[0]):
-            data[f'{name}{"" if value[0] == 1 else f" {count + 1}"}'] = [''] * num_students
-            widths.append(value[1])
+    for name, (count, width) in requirements.items():
+        for k in range(count):
+            col_name = name if count == 1 else f'{name} {k + 1}'
+            data[col_name] = [''] * num_students
+            widths.append(width)
 
     data_frame = pd.DataFrame(data)
-
     data_frame['Roll No.'] = data_frame.index + 1
-
-    data_frame['Reg. No.'] = students.iloc[:, 0]
-    data_frame['Name of Student'] = students.iloc[:, 1]
+    data_frame['Reg. No.'] = students.iloc[:, 0].values
+    data_frame['Name of Student'] = students.iloc[:, 1].values
 
     pdf = PDF(orientation='L')
-    pdf.set_auto_page_break(auto=True, margin=10)
+    pdf.set_auto_page_break(auto=True, margin=20)  # manual page breaks for full control
     pdf.draw_table(data_frame, widths)
     pdf.output(filename)
 
-    print("Table with column split and repeating header saved as PDF in landscape mode successfully.")
+    print("Attendance sheet saved successfully.")
 
 
 if __name__ == '__main__':

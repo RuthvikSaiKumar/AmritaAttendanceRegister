@@ -4,9 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="some more fixes">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    <list default="true" id="ff500012-9578-4040-88cb-2542b16d0c04" name="Changes" comment="requirements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/check-button.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/cross-mark.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/github.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/help.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/help.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/help.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icon1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icon1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/theme.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdf_workers/lab_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/lab_attendance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdf_workers/lab_marks.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/lab_marks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +36,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;RuthvikSaiKumar&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/RuthvikSaiKumar/AmritaAttendanceRegister.git&quot;,
+    &quot;accountId&quot;: &quot;f9e7fe8b-dd9b-426d-a362-046b3cde1766&quot;
+  }
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/pdf_workers/attendance_sheet_pdf.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/pdf_workers/marks_sheet_pdf.py" root0="FORCE_HIGHLIGHTING" />
@@ -40,7 +64,6 @@
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2lxX6KrCrU8PPCwnOn4unZIIf4u" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -71,9 +94,12 @@
     &quot;Python.tset.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
     &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/PycharmProjects/AmritaAttendanceRegister/assets&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
@@ -89,7 +115,7 @@
       <recent name="D:\PycharmProjects\AmritaAttendanceRegister\pdf_workers" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.lab_marks">
+  <component name="RunManager" selected="Python.main">
     <configuration name="lab_marks" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AmritaAttendanceRegister" />
       <option name="ENV_FILES" value="" />
@@ -139,6 +165,13 @@
         <item itemvalue="Python.lab_marks" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-1f77c24022e5-d902c0275401-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.26830.99" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -253,7 +286,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732689165686</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="requirements">
+      <option name="closed" value="true" />
+      <created>1735106722271</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1735106722271</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -282,6 +323,7 @@
     <MESSAGE value="fixed pandas issue of selecting columns by name instead of index" />
     <MESSAGE value="fixed lab marks thingy and partially lab attendance" />
     <MESSAGE value="some more fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="some more fixes" />
+    <MESSAGE value="requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="requirements" />
   </component>
 </project>
